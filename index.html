@@ -13,8 +13,116 @@
 		</div> 
 		<hr> 
 		<div>
-			 这里准备放点东西
-			<br> <img src="60cc01e613c93496.png" />
+			 这里准备放点东西 
+			<br> 
+			<img src="60cc01e613c93496.png"> 
+			<br> <small><small><small> 掐指一算，今天咕咕咕的几率为<script language="javascript">
+							var number = Math.random();
+							number = Math.ceil(number * 100);
+							document.write(number);
+						</script>%！ </small></small></small> 
+			<script>
+				/*
+				* @name:
+				看板娘
+				* @Author:
+				Sky
+				* @version:
+				1.7.1
+				* @description:
+				愿你每天好心情
+				* @include:
+				*
+				* @createTime:
+				2020-5-9 21:
+				00
+				* @updateTime:
+				2020-7-9 11:
+				20
+				*/
+				(function(){
+					const w = window;
+					
+					/*
+					以下参数可修改，=null表示恢复默认值
+					*/
+					w.kbn_setting0=4;
+					
+					/*
+					人物ID
+					*/
+					w.kbn_setting1=8;
+					
+					/*
+					衣服ID
+					*/
+					w.kbn_setting2=false;
+					
+					/*
+					是否显示关闭按钮
+					*/
+					w.kbn_setting3='180x170';
+					
+					/*
+					看板娘大小(px)
+					*/
+					w.kbn_setting4='right:10';
+					
+					/*
+					停靠侧:
+					到侧边距离(px)
+					*/
+					w.kbn_setting5='160x50';
+					
+					/*
+					提示框大小(px)
+					*/
+					w.kbn_setting6='12px';
+					
+					/*
+					提示框字体大小
+					*/
+					w.kbn_setting7='-13px';
+					
+					/*
+					提示框Y轴偏移
+					*/
+					w.kbn_setting8='18px';
+					
+					/*
+					工具栏图标大小
+					*/
+					w.kbn_setting9='36px';
+					
+					/*
+					工具栏行高
+					*/
+					w.kbn_setting10=null;
+					
+					/*
+					一言API可选'fghrsh.net', 'hitokoto.cn', 'jinrishici.com'(古诗词)
+					*/
+					
+					/*
+					－－－－以下勿改－－－－
+					*/
+					const key = encodeURIComponent('看板娘:执行判断');
+					if(w[key] || navigator.connection.type != 'wifi'){
+						return;
+					}
+					try{
+						w[key] = true;
+						const lib = document.createElement('script');
+						lib.src = 'https://cdn.jsdelivr.net/gh/IlysvlVEizbr/Live2D@1.7/kbn.js';
+						lib.defer = true;
+						document.body.append(lib);
+					}
+					catch(err){
+						console.log('看板娘：', err);
+					}
+				}
+				)();
+			</script>  
 		</div>  
 	</body>
 </html>
