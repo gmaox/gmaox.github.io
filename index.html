@@ -21,14 +21,14 @@
 							number = Math.ceil(number * 100);
 							document.write(number);
 						</script>%！ </small></small></small> 
-			<script>
+				<script>
 				/*
 				* @name:
 				看板娘
 				* @Author:
 				Sky
 				* @version:
-				1.7.1
+				1.9.2
 				* @description:
 				愿你每天好心情
 				* @include:
@@ -37,21 +37,25 @@
 				2020-5-9 21:
 				00
 				* @updateTime:
-				2020-7-9 11:
-				20
+				2021-5-9 3:
+				50
 				*/
 				(function(){
-					const w = window;
-					
+					const w = window,
 					/*
 					以下参数可修改，=null表示恢复默认值
 					*/
-					w.kbn_setting0=4;
+					onlyWifi=false;
+					
+					/*
+					仅在Wifi环境运行
+					*/
+					w.kbn_setting0=6;
 					
 					/*
 					人物ID
 					*/
-					w.kbn_setting1=8;
+					w.kbn_setting1=19;
 					
 					/*
 					衣服ID
@@ -64,20 +68,20 @@
 					w.kbn_setting3='180x170';
 					
 					/*
-					看板娘大小(px)
+					看板娘大小
 					*/
 					w.kbn_setting4='right:10';
 					
 					/*
 					停靠侧:
-					到侧边距离(px)
+					到侧边距离
 					*/
 					w.kbn_setting5='160x50';
 					
 					/*
-					提示框大小(px)
+					提示框大小
 					*/
-					w.kbn_setting6='12px';
+					w.kbn_setting6='14px';
 					
 					/*
 					提示框字体大小
@@ -106,23 +110,23 @@
 					/*
 					－－－－以下勿改－－－－
 					*/
-					const key = encodeURIComponent('看板娘:执行判断');
-					if(w[key] || navigator.connection.type != 'wifi'){
+					const key=encodeURIComponent('看板娘:执行判断');
+					if(w[key]||(!(onlyWifi==false)&&navigator.connection.type!='wifi')){
 						return;
 					}
 					try{
-						w[key] = true;
-						const lib = document.createElement('script');
-						lib.src = 'https://cdn.jsdelivr.net/gh/IlysvlVEizbr/Live2D@1.7/kbn.js';
-						lib.defer = true;
+						w[key]=true;
+						const lib=document.createElement('script');
+						lib.src='https://cdn.jsdelivr.net/gh/IlysvlVEizbr/Live2D@1.9/kbn.js';
+						lib.defer=true;
 						document.body.append(lib);
 					}
 					catch(err){
-						console.log('看板娘：', err);
+						console.log('看板娘：',err);
 					}
 				}
 				)();
-			</script>  
+			</script> 
 		</div>  
 	</body>
 </html>
