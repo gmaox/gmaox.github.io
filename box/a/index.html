@@ -1,0 +1,21 @@
+<body>
+    <h1>距离2022年高考倒计时</h1>
+    <h2 id="info"></h2>
+    <script>
+        var info=document.getElementById('info');
+        setInterval(function(){
+            //现在的日期
+            var nd=new Date();
+            //目标的日期 0-11
+            var td=new Date(2022,5,7);
+            //td-nd  时间戳 毫秒差  把diff换算成天，小时，分钟，秒
+            var diff=td-nd;
+            var day=parseInt(diff/(1000*60*60*24));
+            var hour=parseInt(diff%(1000*60*60*24)/(1000*60*60));
+            var minutes=parseInt(diff%(1000*60*60)/(1000*60));
+            var seconds=parseInt(diff%(1000*60*60)%(1000*60)/1000);
+            info.innerText=day+'天'+hour+'小时'+minutes+'分钟'+seconds+'秒';
+        },1000)
+
+    </script>
+</body>
