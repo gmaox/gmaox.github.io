@@ -342,12 +342,10 @@ function shareText(score) {
     }
     SubmitResults();
 
-    if (score === 114) return '哼哼哼啊啊啊啊啊啊啊啊';
-
-    if (score <= 49) return '人间至屑';
-    if (score <= 99) return '斯国一(迫真)';
-    if (score <= 149) return 'sodayo';
-    return '压力马斯内';
+    if (score <= 10) return '完全不够！吃腐肉汉堡都能比这个多！！（？';
+    if (score <= 49) return '魔法少女开始施法！蛋糕消失！';
+    if (score <= 99) return '有点小撑-是法力值不足了吗？';
+    return '全～都可以吃完！！！';
 }
 
 function toStr(obj) {
