@@ -343,7 +343,7 @@ function shareText(score) {
     SubmitResults();
 
     if (score <= 10) return '完全不够！吃腐肉汉堡都能比这个多！！（？';
-    if (score <= 49) return '魔法少女开始施法！蛋糕消失！';
+    if (score <= 49) return '魔法少女成功施法-蛋糕消失！';
     if (score <= 99) return '有点小撑-是法力值不足了吗？';
     return '全～都可以吃完！！！';
 }
