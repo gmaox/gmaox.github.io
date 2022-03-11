@@ -341,8 +341,6 @@ function shareText(score) {
         return '倒计时多了' + ((deviation_time / 1000) - 20).toFixed(2) + "s";
     }
     SubmitResults();
-
-    if (score <= 10) return '完全不够！吃腐肉汉堡都能比这个多！！（？';
     if (score <= 49) return '魔法少女成功施法-蛋糕消失！';
     if (score <= 99) return '有点小撑-是法力值不足了吗？';
     return '全～都可以吃完！！！';
