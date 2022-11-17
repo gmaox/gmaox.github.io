@@ -1,0 +1,31 @@
+<!doctype html>
+<html> 
+	<head> 
+		<meta charset="UTF-8"> 
+		<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1"> 
+		<link rel="shortcut icon" href="favicon.png" type="image/x-icon"> 
+		<title>这是什么？二维码，扫一下</title> 
+	</head> 
+	<body> 
+		<h6>tip：刷新页面可能有不同结果 
+			<div> 
+				<script language="javascript">
+					var number = Math.random();
+					number = Math.ceil(number * 2);
+					document.write(number+"结果");
+				</script> 
+			</div></h6> 
+		<div id="a" style="display:none;"> 
+			<img src="1.png"> 
+		</div> 
+		<div id="b" style="display:none;"> 
+			<img src="2.png"> 
+		</div> 
+		<script language="javascript">
+			if (number==1){
+			document.getElementById("a").style.display="block"}
+			else{
+			document.getElementById("b").style.display="block"}
+		</script>   
+	</body>
+</html>
