@@ -28,5 +28,15 @@
 			document.getElementById("b").style.display="block"}
 		</script>
                 <video autoplay="autoplay" muted src="https://vdse.bdstatic.com//192d9a98d782d9c74c96f09db9378d93.mp4" width="100%" controls="" poster="1.jpg" id="v4"></video>
+          	<audio src="1.mp3" autoplay="" controls=""muted=""> 
+		</audio> 
+		<script>
+			var audio=document.querySelector("audio");
+			setTimeout(function (){
+				audio.muted=false;
+				audio.play();
+			}
+			,1)
+		</script> 
 	</body>
 </html>
