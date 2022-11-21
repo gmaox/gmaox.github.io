@@ -12,12 +12,8 @@
 				<script language="javascript">
 					var number = Math.random();
 					number = Math.ceil(number * 2);
-						if (number==1){document.write("①2");
-    
-}else{
-    document.write("1②");
-}
-				</script> 	<script type="text/javascript">
+				</script> 
+                         	<script type="text/javascript">
 			function display(){
 				if (number==1){
 					document.getElementById("b").style.display="block";
@@ -29,15 +25,14 @@
 				number=1}
 			}
 		</script> 
-		<input type="submit" value="←O→" onclick="display()">
-
 			</div></h6> 
 		<div id="a" style="display:none;"> 
-			<img src="1.png" style="width: 100%;"> 
+			<img src="1.png" style="width: 100%;"> ① 2
 		</div> 
 		<div id="b" style="display:none;"> 
-			<img src="2.jpg" style="width: 100%;"> 
-		</div> 
+			<img src="2.jpg" style="width: 100%;"> 1 ②
+		</div> <input type="submit" value="←O→" onclick="display()">
+
 		<script language="javascript">
 			if (number==1){
 			document.getElementById("a").style.display="block"}
