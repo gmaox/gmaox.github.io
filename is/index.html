@@ -17,7 +17,20 @@
 }else{
     document.write("1②");
 }
-				</script> 
+				</script> 	<script type="text/javascript">
+			function display(){
+				if (number==1){
+					document.getElementById("b").style.display="block";
+					document.getElementById("a").style.display="none";
+				number=2}
+				else{
+					document.getElementById("a").style.display="block";
+					document.getElementById("b").style.display="none";
+				number=1}
+			}
+		</script> 
+		<input type="submit" value="←O→" onclick="display()">
+
 			</div></h6> 
 		<div id="a" style="display:none;"> 
 			<img src="1.png" style="width: 100%;"> 
