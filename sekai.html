@@ -1,6 +1,6 @@
 <title>世界计划随机卡牌</title>
 <script type="text/javascript">var u=Math.round( Math.random() * 25 +1);
-if (u<10){u="0"+u}; var bodyBgs = [];  for (var i = 1; i <24; i++) {if (i<10){i="0"+i};bodyBgs[i] = "http://storage.sekai.best/sekai-assets/character/member/res0"+u+"_no0"+i+"_rip/card_normal.png";  };var randomBgIndex = Math.round( Math.random() * 23 );document.write('<img src="'); document.write(bodyBgs[randomBgIndex]);document.write('" /><a href="/sekai.html">');document.write(u);document.write('-');document.write(randomBgIndex);document.write('点击这里刷新</a>'); if (bodyBgs[randomBgIndex]==undefined){document.write('出错了，正在刷新');document.write('<meta http-equiv="refresh" content="0;url=sekai.html">');
+if (u<10){u="0"+u}; var bodyBgs = [];  for (var i = 1; i <24; i++) {if (i<10){i="0"+i};bodyBgs[i] = "https://storage.sekai.best/sekai-assets/character/member/res0"+u+"_no0"+i+"_rip/card_normal.png";  };var randomBgIndex = Math.round( Math.random() * 23 );document.write('<img src="'); document.write(bodyBgs[randomBgIndex]);document.write('"/><a href="/sekai.html">');document.write(u);document.write('-');document.write(randomBgIndex);document.write('点击这里刷新</a>'); if (bodyBgs[randomBgIndex]==undefined){document.write('出错了，正在刷新');document.write('<meta http-equiv="refresh" content="0;url=sekai.html">');
     
 }</script>
 <small><s>图片裂开就刷新一下，我也不知道为啥函数会时不时输出undefined</s>加了个undefined自动刷新（治标不治本但是能用？）</small>
