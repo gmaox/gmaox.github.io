@@ -1,21 +1,13 @@
-<body style="background-color:#FFFFFF;">
-    <a href="say.html" style="float:left;"><img src="say.png" height="35px"></a><h5>距离2022年高考倒计时</h5>
+<body onload="time()";style="background-color:#FFFFFF;">
+    <a href="say.html" style="float:left;"><img src="say.png" height="35px"></a><h5>系统时间：</h5>
     <h2 id="info"></h2>
     <script>
-        var info=document.getElementById('info');
-        setInterval(function(){
-            //现在的日期
-            var nd=new Date();
-            //目标的日期 0-11
-            var td=new Date(2022,5,7);
-            //td-nd  时间戳 毫秒差  把diff换算成天，小时，分钟，秒
-            var diff=td-nd;
-            var day=parseInt(diff/(1000*60*60*24));
-            var hour=parseInt(diff%(1000*60*60*24)/(1000*60*60));
-            var minutes=parseInt(diff%(1000*60*60)/(1000*60));
-            var seconds=parseInt(diff%(1000*60*60)%(1000*60)/1000);
-            info.innerText=day+'天'+hour+'小时'+minutes+'分钟'+seconds+'秒';
-        },1000)
-
+       function time() {
+  t_div = document.getElementById('showtime');
+  var now = new Date()
+  t_div.innerHTML = (now.getMonth() + 1) + "/" + now.getDate() + "   "+ now.getHours() + ":" + now.getMinutes() + "   " + now.getSeconds() + "s";
+  setTimeout(time, 1000);
+}
     </script>
+    <h2 id="showtime"></h2>
 </body>
