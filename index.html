@@ -5,8 +5,8 @@
 		<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1"> 
 		<link rel="shortcut icon" href="favicon.png" type="image/x-icon"> 
 		<title>maoziの窝</title> 
-	</head> 
-	<body style="background-image:url('/nene.png');"> 
+	</head>
+<!-- <body style="background-image:url('/nene.png');">  -->
    <script type="text/javascript">
  
     function display(id){
@@ -18,6 +18,22 @@
       }
    }
 </script>
+<head>
+    <style>
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <iframe src="https://ciallo.cc/"></iframe>
+</body>
 <input type="submit" value="隐藏👀" onclick="display('l')" style="float:right;">
 <input type="submit" value="拖动✋" onclick="display('a')" style="float:left;">
 <div id="l"align="center" style="margin:auto;background-color:#FFFFFFF0;width:370px;">
