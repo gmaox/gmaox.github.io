@@ -18,22 +18,6 @@
       }
    }
 </script>
-<head>
-    <style>
-        iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            z-index: -1;
-        }
-    </style>
-</head>
-<body>
-    <iframe src="https://ciallo.cc/"></iframe>
-</body>
 <input type="submit" value="隐藏👀" onclick="display('l')" style="float:right;">
 <input type="submit" value="拖动✋" onclick="display('a')" style="float:left;">
 <div id="l"align="center" style="margin:auto;background-color:#FFFFFFF0;width:370px;">
@@ -166,3 +150,83 @@
 <h1 id="a" style="font-size:999px;color:#FFFFFF00;display:none;">__________________</h1>
 	</body>
 </html>
+<body>
+    <div style="opacity: 0.2">
+        <marquee behavior="scroll" direction="left" scrollamount="30"><font color="red" size="15px">Ciallo～(∠・ω< )⌒★</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="15"><font color="aqua" size="11px">Ciallo～(∠・ω< )⌒☆</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="25"><font>Ciallo～(∠・ω< )⌒★</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="12"><font color="coral" size="10px">Ciallo～(∠・ω< )⌒★</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="28"><font color="red">Ciallo～(∠・ω< )⌒★</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="20"><font color="greenyellow" size="13px">Ciallo～(∠・ω< )⌒☆</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="10"><font size="16px">Ciallo～(∠・ω< )⌒★</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="15"><font color="pink" size="20px">Ciallo～(∠・ω< )⌒★</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="11"><font color="aqua" size="6px">Ciallo～(∠・ω< )⌒☆</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="28"><font color="red">Ciallo～(∠・ω< )⌒☆</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="8"><font color="greenyellow" size="10px">Ciallo～(∠・ω< )⌒★</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="20"><font color="pink" size="9px">Ciallo～(∠・ω< )⌒★</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="13"><font color="green" size="5px">Ciallo～(∠・ω< )⌒☆</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="17"><font color="blue" size="5px">Ciallo～(∠・ω< )⌒☆</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="16"><font color="yellow" size="7px">Ciallo～(∠・ω< )⌒★</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="11"><font color="red" size="5px">Ciallo～(∠・ω< )⌒★</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="10"><font color="orange" size="8px">Ciallo～(∠・ω< )⌒☆</font></marquee>
+        <marquee behavior="scroll" direction="left" scrollamount="20"><font color="gray" size="9px">Ciallo～(∠・ω< )⌒★</font></marquee>
+    </div>
+</body>
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script type="text/javascript">
+    let a_idx = 0;
+
+    let ac = new AudioContext();
+
+    $(function (){
+        $("body").click(function(e) {
+            const a = new Array("Ciallo～(∠・ω< )⌒★", "Ciallo～(∠・ω< )⌒☆");
+            const $i = $("<span/>").text(a[a_idx]);
+            a_idx = (a_idx + 1) % a.length;
+            const x = e.pageX,
+                y = e.pageY;
+            $i.css({
+                "z-index": 999999999999999999999999999999999999999999999999999999999999999999999,
+                "top": y - 20,
+                "left": x,
+                "position": "absolute",
+                "font-weight": "bold",
+                "color": color16()
+            });
+            $("body").append($i);
+            $i.animate({
+                    "top": y - 180,
+                    "opacity": 0
+                },
+                1500,
+                function() {
+                    $i.remove();
+                });
+        });
+    })
+
+    function color16(){
+        const r = Math.floor(Math.random()*256);
+        const g = Math.floor(Math.random()*256);
+        const b = Math.floor(Math.random()*256);
+        return `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
+    }
+
+    function load_sound(url_data) {
+        const req = new XMLHttpRequest();
+        req.open('GET', url_data, true);
+        req.responseType = 'arraybuffer';
+        req.onload = function() {
+            ac.decodeAudioData(req.response, function(buffer){
+                const source = ac.createBufferSource();
+                source.buffer = buffer;
+                source.connect(ac.destination);
+                source.start(0);
+            },function (e) {
+                console.info('错误');
+            });
+        }
+        req.send();
+    }
+</script>
