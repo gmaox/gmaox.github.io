@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<!--
+  DSC Studio
+  Copyright (C) 2022-2024 nastys
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="manifest" href="./manifest.json">
+    <link href="./styles.css" rel="stylesheet">
+    <title>DSC Studio</title>
+    <meta name="theme-color" content="#9a8cee" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+  </head>
+  <body>
+    <div id="progresswnd" class="progresswnd translucent">
+      <div id="progressflex" class="progresswnd progresswndinner">
+        <div id="progresscontainer" class="modalwnd" style="height: 80px; cursor: progress !important;">
+          <div id="progressheader" class="modalwndheader" style="cursor: progress !important;">Loading...</div>
+          <div id="progressinside" class="modalwndinside" style="cursor: progress !important; overflow: hidden !important;"><progress id="progressbar" style="height: revert; width: 100%; margin: auto; accent-color: #8074c9; cursor: progress !important;" max="1"></progress></div>
+        </div>
+      </div>
+    </div>
+    <div id="modalbg" class="modalbg translucent invisible hidden">
+      <div id="modalwnd" class="modalwnd">
+        <div id="modalwndheader" class="modalwndheader"></div>
+        <div id="modalwndinside" class="modalwndinside" style="min-height: 50px;"></div>
+        <div id="modalwndfooter" class="modalwndfooter"></div>
+      </div>
+    </div>
+    <div class="gradient2">
+      <div class="menubar" id="menubar">
+        <div class="menubaritem" id="menubaritem_file"><div class=menubaritemtext>File</div></div>
+        <div class="menubaritem" id="menubaritem_edit"><div class=menubaritemtext>Edit</div></div>
+        <div class="menubaritem" id="menubaritem_branch"><div class=menubaritemtext>Branch</div></div>
+        <div class="menubaritem" id="menubaritem_tools"><div class=menubaritemtext>Tools</div></div>
+        <div class="menubaritem" id="menubaritem_convert"><div class=menubaritemtext>Convert</div></div>
+        <div class="menubaritem" id="menubaritem_bookmarks"><div class=menubaritemtext>Bookmarks</div></div>
+        <div class="menubaritem" id="menubaritem_preferences"><div class=menubaritemtext>Preferences</div></div>
+        <div class="menubaritem" id="menubaritem_help"><div class=menubaritemtext>Help</div></div>
+        <div class="modalbtn modalbtn_mini hidden" style="margin-left: auto; margin-right: 0.5rem;" id="installbtn">Install</div>
+      </div>
+      <div class="toolbar" id="toolbar">
+        <div class="toolbutton hastooltip" id="toolopen"><span class="menu gradient tooltip">Open...</span><img class="toolicon" src="./icons/OpenFile.svg" draggable="false"/></div>
+        <div class="toolbutton hastooltip toolbutton-disabled" id="toolsave"><span class="menu gradient tooltip">Save</span><img class="toolicon" src="./icons/Save.svg" draggable="false"/></div>
+        <div class="toolbutton hastooltip" id="toolsaveas"><span class="menu gradient tooltip">Save as...</span><img class="toolicon" src="./icons/SaveAs.svg" draggable="false"/></div>
+        <div class="toolseparator"></div>
+        <div class="toolbutton hastooltip toolbutton-disabled" id="toolundo"><span class="menu gradient tooltip">Undo</span><img class="toolicon" src="./icons/Undo.svg" draggable="false"/></div>
+        <div class="toolbutton hastooltip toolbutton-disabled" id="toolredo"><span class="menu gradient tooltip">Redo</span><img class="toolicon" src="./icons/Redo.svg" draggable="false"/></div>
+        <div class="toolseparator"></div>
+        <div class="toolbutton hastooltip" id="toolsearch"><span class="menu gradient tooltip">Find...</span><img class="toolicon" src="./icons/Search.svg" draggable="false"/></div>
+        <div class="toolseparator"></div>
+        <div class="toolbutton hastooltip" id="toolpreview"><span class="menu gradient tooltip">Preview from here</span><img class="toolicon" src="./icons/Run.svg" draggable="false"/></div>
+        <div class="toolbutton hastooltip" id="toolpreviewall"><span class="menu gradient tooltip">Preview from the start</span><img class="toolicon" src="./icons/RunAll.svg" draggable="false"/></div>
+        <div class="toolseparator"></div>
+        <div class="toolbutton hastooltip" id="toolbktoggle"><span class="menu gradient tooltip">Toggle bookmark</span><img class="toolicon" src="./icons/Bookmark.svg" draggable="false"/></div>
+        <div class="toolbutton hastooltip toolbutton-disabled" id="toolbkprev"><span class="menu gradient tooltip">Previous bookmark</span><img class="toolicon" src="./icons/PreviousBookmark.svg" draggable="false"/></div>
+        <div class="toolbutton hastooltip toolbutton-disabled" id="toolbknext"><span class="menu gradient tooltip">Next bookmark</span><img class="toolicon" src="./icons/NextBookmark.svg" draggable="false"/></div>
+        <div class="toolbutton hastooltip toolbutton-disabled" id="toolbkclear"><span class="menu gradient tooltip">Remove all bookmarks</span><img class="toolicon" src="./icons/ClearBookmark.svg" draggable="false"/></div>
+      </div>
+    </div>
+    <div id="container" class="editor"></div>
+
+    <div id="footer" class="footer gradient2">
+      <label for="dscfmt">Game:&nbsp;</label><select name="Format" id="dscfmt" autocomplete="off">
+        <option value="ft">FT</option>
+        <option value="dt2">DT 2nd/e, f</option>
+        <option value="pd1">PD 1st</option>
+        <option value="pd2">PD 2nd/e</option>
+      </select>
+      <label for="dscver" style="margin-left: 20px;">Format: 0x</label><input type="text" id="dscver" name="dscver" pattern="[a-fA-F\d]+" minlength="8" maxlength="8" autocomplete="off" style="width: 80px;">
+      <div class="toolseparator" style="margin-left: 21px;"></div>
+      <label for="indicator_time" style="margin-left: 15px;">Time:&nbsp;</label><input type="text" id="indicator_time" name="indicator_time" autocomplete="off" readonly="true" value="00:00:00.00000" style="min-width: fit-content; width: 140px; text-align: center;">
+      <span style="margin-left: 20px;">Frame:&nbsp;</span><span id="indicator_frame" style="min-width: fit-content;">0</span>
+      <span style="margin-left: 20px;">Branch:&nbsp;</span><span id="indicator_branch" style="min-width: fit-content;">Global</span>
+      <span style="margin-left: 20px;">BPM:&nbsp;</span><span id="indicator_ts" style="min-width: fit-content;">Undefined</span>
+      <span style="margin-left: 20px;">Hit:&nbsp;</span><span id="indicator_hit" style="margin-right: 20px; min-width: fit-content;">Undefined</span>
+    </div>
+
+    <div class="menu gradient2" id="menu_file" hidden>
+      <div class="menuitem" id="menuitem_open"><img src="./icons/OpenFile.svg" class="menuicon-small"><div class="menuitemtext">Open...</div></div>
+      <div class="menuitem" id="menuitem_merge"><img src="./icons/MergeFile.svg" class="menuicon-small"><div class="menuitemtext">Merge (experimental)...</div></div>
+      <div class="menuitem menuitem-checkbox" id="menuitem_autodetectgame"><input type="checkbox" id="cb_autodetectgame" name="cb_autodetectgame" checked="true"><label for="cb_autodetectgame" id="lbl_autodetectgame" class="menuitemtext">Autodetect game</label></div>
+      <div class="menuitem menuitem-checkbox" id="menuitem_upgradefmt"><input type="checkbox" id="cb_upgradefmt" name="cb_upgradefmt" checked="true"><label for="cb_upgradefmt" id="lbl_upgradefmt" class="menuitemtext">Upgrade format on save</label></div>
+      <div class="menuitem menuitem-disabled" id="menuitem_save"><img src="./icons/Save.svg" class="menuicon-small"><div class="menuitemtext">Save</div></div>
+      <div class="menuitem" id="menuitem_saveas"><img src="./icons/SaveAs.svg" class="menuicon-small"><div class="menuitemtext">Save as...</div></div>
+    </div>
+    <div class="menu gradient2" id="menu_edit" hidden>
+      <div class="menuitem menuitem-disabled" id="menuitem_undo"><img src="./icons/Undo.svg" class="menuicon-small"><div class="menuitemtext">Undo</div></div>
+      <div class="menuitem menuitem-disabled" id="menuitem_redo"><img src="./icons/Redo.svg" class="menuicon-small"><div class="menuitemtext">Redo</div></div>
+      <div class="menuitem" id="menuitem_find"><img src="./icons/Search.svg" class="menuicon-small"><div class="menuitemtext">Find...</div></div>
+      <div class="menuitem" id="menuitem_replace"><div class="menuicon-small"></div><div class="menuitemtext">Replace...</div></div>
+      <div class="menuitem" id="menuitem_preview"><img src="./icons/Run.svg" class="menuicon-small"><div class="menuitemtext">Preview from here</div></div>
+      <div class="menuitem" id="menuitem_previewall"><img src="./icons/RunAll.svg" class="menuicon-small"><div class="menuitemtext">Preview from the start</div></div>
+    </div>
+    <div class="menu gradient2" id="menu_tools" hidden>
+      <div class="menuitem" id="menuitem_rmtargets"><div class="menuitemtext">Remove chart commands (TARGET, BAR_TIME_SET, TARGET_FLYING_TIME, MODE_SELECT)</div></div>
+      <div class="menuitem" id="menuitem_rmtargets1"><div class="menuitemtext">Remove chart commands (EXPRESSION, MOUTH_ANIM)</div></div>
+      <div class="menuitem" id="menuitem_timecleanup"><div class="menuitemtext">Remove unused TIME commands</div></div>
+      <div class="menuitem" id="menuitem_rmcommands"><div class="menuitemtext">Remove or isolate commands...</div></div>
+      <div class="menuitem" id="menuitem_normalizetime"><div class="menuitemtext">Normalize TIME</div></div>
+      <div class="menuitem" id="menuitem_shifttime"><div class="menuitemtext">Advanced TIME shift...</div></div>
+      <div class="menuitem" id="menuitem_lyrics"><div class="menuitemtext">Lyrics (preview)...</div></div>
+    </div>
+    <div class="menu gradient2" id="menu_branch" hidden>
+      <div class="menuitem" id="menuitem_rmbranch0"><div class="menuitemtext">Remove Global</div></div>
+      <div class="menuitem" id="menuitem_rmbranch1"><div class="menuitemtext">Remove Failure</div></div>
+      <div class="menuitem" id="menuitem_rmbranch2"><div class="menuitemtext">Remove Success</div></div>
+      <div class="menuitem" id="menuitem_isbranch0"><div class="menuitemtext">Isolate Global</div></div>
+      <div class="menuitem" id="menuitem_isbranch1"><div class="menuitemtext">Isolate Failure</div></div>
+      <div class="menuitem" id="menuitem_isbranch2"><div class="menuitemtext">Isolate Success</div></div>
+    </div>
+    <div class="menu gradient2" id="menu_convert" hidden>
+      <div class="menuitem" id="menuitem_idswap"><div class="menuitemtext">Swap old/new animations...</div></div>
+      <!--<div class="menuitem" id="menuitem_convert_f_ft"><div class="menuitemtext">DT 2nd/f to FT...</div></div>-->
+      <div class="menuitem" id="menuitem_export_dex"><div class="menuitemtext">Export DEX (experimental)...</div></div>
+      <div class="menuitem" id="menuitem_edit_commands_to_standard"><div class="menuitemtext">EDIT commands to standard (experimental)...</div></div>
+      <!--<div class="menuitem" id="menuitem_convert_d2_ft"><div class="menuitemtext">Coming soon™</div><img src="./icons/pokeslow-a.png" class="menuicon"></div>-->
+    </div>
+    <div class="menu gradient2" id="menu_bookmarks" hidden>
+      <div class="menuitem" id="menuitem_togglebkm"><img src="./icons/Bookmark.svg" class="menuicon-small"><div class="menuitemtext">Toggle bookmark</div></div>
+      <div class="menuitem menuitem-disabled" id="menuitem_prevbkm"><img src="./icons/PreviousBookmark.svg" class="menuicon-small"><div class="menuitemtext">Previous bookmark</div></div>
+      <div class="menuitem menuitem-disabled" id="menuitem_nextbkm"><img src="./icons/NextBookmark.svg" class="menuicon-small"><div class="menuitemtext">Next bookmark</div></div>
+      <div class="menuitem menuitem-disabled" id="menuitem_rmallbkm"><img src="./icons/ClearBookmark.svg" class="menuicon-small"><div class="menuitemtext">Remove all bookmarks</div></div>
+    </div>
+    <div class="menu gradient2" id="menu_preferences" hidden>
+      <div class="menuitem menuitem-checkbox" id="menuitem_showinlayhints"><input type="checkbox" id="cb_showinlayhints" name="cb_showinlayhints" checked="true"><label for="cb_showinlayhints" id="lbl_showinlayhints" class="menuitemtext">Show inlay hints for values</label></div>
+      <div class="menuitem menuitem-checkbox" id="menuitem_showinlayhints2"><input type="checkbox" id="cb_showinlayhints2" name="cb_showinlayhints2" checked="true"><label for="cb_showinlayhints2" id="lbl_showinlayhints2" class="menuitemtext">Show inlay hints for conversions</label></div>
+    </div>
+    <div class="menu gradient2" id="menu_help" hidden>
+      <div class="menuitem" id="menuitem_about"><div class="menuitemtext">About...</div></div>
+      <div class="menuitem" id="menuitem_copyright"><div class="menuitemtext">Licence...</div></div>
+      <div class="menuitem" id="menuitem_src"><div class="menuitemtext">Source code...</div></div>
+    </div>
+    <div id="preview_background" style="display: none;" onclick="preview_stop(false);" oncontextmenu="preview_stop(true); return false;"></div>
+    <div id="preview_window" style="display: none;" onclick="preview_stop(false);" oncontextmenu="preview_stop(true); return false;"><div id="preview_body"><div id="preview_container"><span id="preview_canvas"></span></div></div></div>
+  </body>
+  <script src="./node_modules/monaco-editor/min/vs/loader.js"></script>
+	<script>
+    var editor;
+    var model;
+    var bookmarks = [];
+    var fileHandle;
+    var modified = false;
+
+    var fileApi = 'showSaveFilePicker' in window;
+    var browser_dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    var install_prompt_handle;
+    var installed = true;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      install_prompt_handle = e;
+      installed = false;
+      const btn = document.getElementById('installbtn');
+      btn.classList.remove('hidden');
+      btn.onclick = () =>
+      {
+        window_install();
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      const btn = document.getElementById('installbtn');
+      btn.classList.add('hidden');
+    });
+
+    function setDarkMode(value) {
+      browser_dark = value;
+      monaco.editor.setTheme(browser_dark ? 'dsce-dark' : 'dsce-light');
+    }
+
+    window.matchMedia("(prefers-color-scheme: dark)").addListener(
+      e => e.matches && setDarkMode(true)
+    );
+
+    window.matchMedia("(prefers-color-scheme: light)").addListener(
+      e => e.matches && setDarkMode(false)
+    );
+
+    if (fileApi)
+    {
+      document.getElementById('toolsave').classList.remove('toolbutton-disabled');
+      document.getElementById('menuitem_save').classList.remove('menuitem-disabled');
+    }
+    else
+    {
+      document.getElementById('menuitem_save').childNodes[1].innerText = 'Save (requires Chrome)';
+    }
+
+    document.oncontextmenu = (e) => {
+      e.preventDefault();
+    }
+
+    function setProgress(progress, caption)
+    {
+      const wnd = document.getElementById("progresswnd");
+      if (progress == -1)
+      {
+        wnd.setAttribute('hidden', 'true');
+      }
+      else
+      {
+        if (typeof caption !== 'undefined')
+        {
+          document.getElementById("progressheader").innerText = caption;
+        }
+        document.getElementById("progressbar").value = progress;
+        wnd.removeAttribute('hidden');
+      }
+    }
+
+    function dialogEx(caption, content, fnok)
+    {
+      const bg = document.getElementById('modalbg');
+      const container = document.getElementById('modalwndinside');
+      const header = document.getElementById('modalwndheader');
+      const footer = document.getElementById('modalwndfooter');
+      footer.classList.add('gradient');
+      header.innerText = caption;
+      container.innerText = content;
+      
+      const btnok = document.createElement('btn');
+      btnok.classList.add('modalbtn');
+      btnok.classList.add('modalbtn_blue');
+      btnok.innerText = fnok ? 'Yes' : 'OK';
+      function closewnd()
+      {
+          bg.classList.add('invisible');
+          setTimeout(function() { 
+              bg.classList.add('hidden');
+              header.innerHTML = '';
+              container.innerHTML = '';
+              footer.innerHTML = '';
+          }, 300);
+      }
+      btnok.onclick = function()
+      {
+          closewnd();
+          if (fnok)
+          {
+            fnok();
+          }
+      }
+      footer.appendChild(btnok);
+
+      if (fnok)
+      {
+        const btnno = document.createElement('btn');
+        btnno.classList.add('modalbtn');
+        btnno.classList.add('modalbtn_red');
+        btnno.innerText = 'No';
+        btnno.onclick = function()
+        {
+            closewnd();
+        }
+        footer.appendChild(btnno);
+      }
+
+      bg.classList.remove('hidden');
+      bg.clientWidth;
+      bg.classList.remove('invisible');
+    }
+
+    function setModified(_modified)
+    {
+      if (modified != _modified)
+      {
+        modified = _modified;
+        const hasModifiedStr = document.title.startsWith('* ');
+        if (modified && !hasModifiedStr)
+        {
+          document.title = '* ' + document.title;
+        }
+        else if (!modified && hasModifiedStr)
+        {
+          document.title = document.title.substring(2);
+        }
+      }
+    }
+
+    function setSize ()
+    {
+      document.getElementById('preview_window').style.transform = `scale(${Math.min(window.innerWidth / 1280, window.innerHeight / 720)})`;
+    }
+
+    setSize();
+    window.onresize = setSize;
+
+    document.getElementById('dscfmt').value = 'ft';
+    document.getElementById('dscver').value = '15122517';
+
+    window.onbeforeunload = function ()
+    {
+      if (modified)
+      {
+        return "Discard changes and leave?";
+      }
+    };
+	</script>
+  <script src="defs_ft.js"></script>
+  <script type="module">
+    async function swsetup() {
+      if ('serviceWorker' in navigator) {
+        let hasRegistration = true;
+        await navigator.serviceWorker.getRegistration().then((registration) => {
+          hasRegistration = typeof registration !== 'undefined';
+        });
+        await navigator.serviceWorker.register("./serviceworker.js").then((registration) => 
+        {
+          navigator.serviceWorker.addEventListener('controllerchange', () =>
+          {
+            console.log("Update applied, reloading...");
+            var reloading;
+            if (reloading)
+            {
+              return;
+            }
+            reloading = true;
+            window.location.reload();
+          });
+          if (hasRegistration)
+          {
+            registration.addEventListener('updatefound', () =>
+            {
+              dialogEx("Update available", "Restart DSC Studio to apply updates?", () => 
+              {
+                registration.waiting.postMessage('skipWaiting');
+              })
+            });
+          }
+        });
+      }
+    }
+    await swsetup();
+  </script>
+  <script src="./editor_util.js"></script>
+  <script src="./idswap.js"></script>
+  <script src="./menu.js"></script>
+  <script src="./fmtlist.js"></script>
+  <script type="module" src="./editor.js"></script>
+  <script type="module" src="./dsc.js"></script>
+  <script src="./preview.js"></script>
+</html>
