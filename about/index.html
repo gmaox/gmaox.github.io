@@ -37,7 +37,7 @@ a:hover{ text-decoration:underline}
    <div id="iframe-container">
         <button id="myButton" onclick="openNewPage()">🙌全屏游玩</button>
         <button id="myButton1" onclick="openNewPage1()">🔄随机涩图</button>
-        <iframe src="https://gmaox.github.io/EatMusi"></iframe>
+        <iframe id="myIframe" src="https://gmaox.github.io/EatMusi"></iframe>
     </div>
 
     <script>
@@ -45,7 +45,11 @@ a:hover{ text-decoration:underline}
             window.open('https://gmaox.github.io/EatMusi', '_blank');
         }
         function openNewPage1() {
-            document.querySelector('iframe').src = 'https://api.dujin.org/pic/';
+            var iframe = document.getElementById('myIframe');
+    var img = '<img src="https://api.dujin.org/pic/" style="width:100%; height:100%;">';
+    iframe.contentWindow.document.open();
+    iframe.contentWindow.document.write(img);
+    iframe.contentWindow.document.close();
         }
     </script><div align="center">
 一言API由<a href="https://imiliy.cn/api">神秘网站</a>提供
