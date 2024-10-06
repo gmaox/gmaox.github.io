@@ -1,3 +1,9 @@
-<script type="text/javascript" src="https://v1.hitokoto.cn/?c=f&encode=text"></script>
-
-<div id="simo"><script>simo()</script></div><a href="say.html"><img src="6.png"></a>
+<script>
+    fetch('https://v1.hitokoto.cn/?c=f&encode=text')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('hitokoto').innerText = data;
+        });
+</script>
+<div id="hitokoto"></div>
+<a href="say.html"><img src="6.png"></a>
