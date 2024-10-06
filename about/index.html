@@ -12,6 +12,12 @@ a:hover{ text-decoration:underline}
             right: 10px;
             z-index: 10; /* 确保按钮在iframe上方 */
         }
+        #myButton1 {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            z-index: 10; /* 确保按钮在iframe上方 */
+                }
         iframe {
             width: 100%;
             height: 100%;
@@ -30,12 +36,16 @@ a:hover{ text-decoration:underline}
 <!-- <iframe src="frame.html" width="100%" height="500"></iframe>-->
    <div id="iframe-container">
         <button id="myButton" onclick="openNewPage()">🙌全屏游玩</button>
+        <button id="myButton1" onclick="openNewPage1()">🔄随机涩图</button>
         <iframe src="https://gmaox.github.io/EatMusi"></iframe>
     </div>
 
     <script>
         function openNewPage() {
             window.open('https://gmaox.github.io/EatMusi', '_blank');
+        }
+        function openNewPage1() {
+            window.open('https://api.dujin.org/pic/', '_self');
         }
     </script><div align="center">
 一言API由<a href="https://imiliy.cn/api">神秘网站</a>提供
