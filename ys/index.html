@@ -1,3 +1,16 @@
 <script>
-  window.location.href="yuanshengame://";
+  function openApp() {
+    var appUrl = "yuanshengame://";
+    var fallbackUrl = "https://ys.mihoyo.com/"; // 备用链接
+
+    // 尝试打开应用
+    window.location.href = appUrl;
+
+    // 设置定时器，如果应用未打开则跳转到备用链接
+    setTimeout(function() {
+      window.location.href = fallbackUrl;
+    }, 5000); // 2秒后跳转
+  }
+
+  openApp();
 </script>
