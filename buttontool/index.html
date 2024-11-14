@@ -517,6 +517,12 @@
                 // 检查 ENABLED 是否为真
                 if (parsedValue.ENABLED) {
                      Loadtype = key;
+                    for (const [key, value] of Object.entries(typeMap)) {
+    if (value === Loadtype) {
+        Loadtype = key; // 替换为键
+        break; // 如果只需要替换第一个匹配项，可以在找到后退出循环
+    }
+                    }
                      keyHeight = parsedValue.HEIGHT/window.devicePixelRatio;
                      keyWidth = parsedValue.WIDTH/window.devicePixelRatio;
                      lastClickPos = {
