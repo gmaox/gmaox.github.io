@@ -498,28 +498,36 @@
 
         // 处理导入文件
         function handleFileInput(event) {
-            const file = event.target.files[0];
-            if (file && file.type === "application/json") {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const config = JSON.parse(e.target.result);
-                    buttons = config.map(buttonConfig => {
-                        // 创建并添加按键
-                        const button = document.createElement("div");
-                        button.className = "button";
-                        button.style.width = `${buttonConfig.width}px`;
-                        button.style.height = `${buttonConfig.height}px`;
-                        button.style.left = `${buttonConfig.x - roundToNearest5(buttonConfig.width / 2)}px`;
-                        button.style.top = `${buttonConfig.y - roundToNearest5(buttonConfig.height / 2)}px`;
-                        button.innerText = buttonConfig.type;
-                        document.getElementById("canvas").appendChild(button);
-                        return buttonConfig; // 重新保存配置
-                    });
-                };
-                reader.readAsText(file);
-            } else {
-                alert("请选择有效的配置文件！");
+    const file = event.target.files[0];
+    if (file && file.type === "text/plain") {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const config = JSON.parse(e.target.result);
+
+            // 遍历导入的 JSON
+            for (const [key, value] of Object.entries(config)) {
+                // 二次解析嵌套的 JSON 字符串
+                const parsedValue = JSON.parse(value);
+
+                // 检查 ENABLED 是否为真
+                if (parsedValue.ENABLED) {
+                     type = key;
+                     keyHeight = parsedValue.HEIGHT/window.devicePixelRatio;
+                     keyWidth = parsedValue.WIDTH/window.devicePixelRatio;
+                     lastClickPos = {
+                        x: parsedValue.LEFT/window.devicePixelRatio,
+                        y: parsedValue.TOP/window.devicePixelRatio
+                    };
+
+                    // 调用 addButton，并传递参数
+                    addButton();
+                }
             }
+        };
+        reader.readAsText(file);
+    } else {
+        alert("请选择有效的配置文件！");
+    }
         }
 
         // 监听标题点击，切换控件面板的位置
