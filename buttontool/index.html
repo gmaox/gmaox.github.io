@@ -153,8 +153,8 @@
             keys.forEach(key => {
                 const button = document.createElement("button");
                 button.innerText = key;
-                button.style.width = `${keyWidth}px`;
-                button.style.height = `${keyHeight}px`;
+                button.style.width = '50px';
+                button.style.height = '50px';
                 button.onclick = () => selectKey(key);
                 keySelector.appendChild(button);
             });
