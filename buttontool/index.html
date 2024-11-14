@@ -366,17 +366,7 @@
     };
 }
 
-
-        // 导出配置
-        function exportConfig() {
-            const config = buttons.map(button => ({
-                type: button.type,
-                width: button.width,
-                height: button.height,
-                x: roundToNearest5(button.x),
-                y: roundToNearest5(button.y)
-            }));
-            let typeMap = {
+let typeMap = {
     "H": "key_36",
     "I": "key_37",
     "J": "key_38",
@@ -460,6 +450,16 @@
        "0": "key_7",  
 }
 ;
+        // 导出配置
+        function exportConfig() {
+            const config = buttons.map(button => ({
+                type: button.type,
+                width: button.width,
+                height: button.height,
+                x: roundToNearest5(button.x),
+                y: roundToNearest5(button.y)
+            }));
+            
             let convertedData = {};
             config.forEach((item, index) => {
                 let key = typeMap[item.type];
