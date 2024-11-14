@@ -134,6 +134,7 @@
         let keyHeight = 50; // 初始化高度
         let deleteMode = false; // 删除模式标志
         let index = -1; // 按键索引
+        let Loadtype = "" //载入标志
             
         // 用于限制坐标到5的倍数
         function roundToNearest5(value) {
@@ -226,6 +227,10 @@
             button.style.left = `${lastClickPos.x}px`;
             button.style.top = `${lastClickPos.y}px`;
             button.innerText = type;
+            if (Loadtype.trim() !== ""){
+    button.innerText = Loadtype;
+    Loadtype = "";
+            }
 
             // 保存配置信息，存储位置、大小等
             const buttonConfig = {
@@ -511,7 +516,7 @@
 
                 // 检查 ENABLED 是否为真
                 if (parsedValue.ENABLED) {
-                     type = key;
+                     Loadtype = key;
                      keyHeight = parsedValue.HEIGHT/window.devicePixelRatio;
                      keyWidth = parsedValue.WIDTH/window.devicePixelRatio;
                      lastClickPos = {
