@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>按键编辑器</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        #canvas {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        #control-panel {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 20px;
+            background: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            border-radius: 8px;
+        }
+
+        .button {
+            position: absolute;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        #crosshair {
+            position: absolute;
+            background-color: #808080;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            opacity: 0.6;
+            /* 半透明效果 */
+            display: none;
+            /* 初始隐藏 */
+        }
+
+        #key-selector {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 300px;
+            background: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            display: none;
+            z-index: 15;
+            overflow-y: auto;
+            border-radius: 8px;
+        }
+
+        #key-selector button {
+            width: 40px;
+            height: 40px;
+            margin: 3px;
+            font-size: 16px;
+            background-color: #ddd;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="control-panel">
+        <hr id="panel-title">
+        <label>
+            <button id="key-type" onclick="openKeySelector()" style="position: fixed;  /* 固定定位 */
+            top: 40px;        /* 上边距 px */
+            right: 20px;      /* 右边距 px */
+            padding: 5px 5px;
+            font-size: 18px;">A</button>
+        </label>
+        <label>宽度：<span id="width-label">50</span> px
+            <input type="range" id="key-width" min="50" max="300" value="50" oninput="updateWidthLabel()">
+
+        </label><br>
+        <label>高度： <span id="height-label">50</span> px
+            <input type="range" id="key-height" min="50" max="300" value="50" oninput="updateHeightLabel()">
+
+        </label><br>
+        <button onclick="exportConfig()">导出配置</button>
+        <button onclick="importConfig()">导入配置</button>
+        <button onclick="toggleDeleteMode()">删除按键</button>
+        <button onclick="addButton()">添加按键</button>
+    </div>
+
+    <div id="canvas" onclick="recordPosition(event)">
+        <div id="crosshair"></div>
+    </div>
+
+    <!-- 按键选择框 -->
+    <div id="key-selector">
+        <div id="keys"></div>
+    </div>
+
+    <input type="file" id="file-input" style="display: none" onchange="handleFileInput(event)" />
+
+    <script>
+        let buttons = []; // 存储所有按键的配置信息
+        let lastClickPos = {
+            x: 0,
+            y: 0
+        }; // 记录最后一次点击的位置
+        const keys = ["Esc","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","Del","触控左","Home","End","PgUp","PgDn","1","2","3","4","5","6","7","8","9","0","触控中","Ctrl","Win","Alt","Space","Shift","Tab","Enter","A","B","C","D","E","F","G","触控右","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","摇杆","V","W","X","Y","Z","Insert","↑","↓","←","→","ML","MR","MR+","MM","十字键"];
+        let keyWidth = 50; // 初始化宽度 
+        let keyHeight = 50; // 初始化高度
+        let deleteMode = false; // 删除模式标志
+        let index = -1; // 按键索引
+            
+        // 用于限制坐标到5的倍数
+        function roundToNearest5(value) {
+            return Math.round(value / 5) * 5;
+        }
+        
+        // 初始化按键选择框
+        function initKeySelector() {
+            const keySelector = document.getElementById("keys");
+            keySelector.innerHTML = '';
+        
+            // 使用 CSS Grid 布局并设置每行15个按键
+            keySelector.style.display = "grid";
+            keySelector.style.gridTemplateColumns = "repeat(15, 1fr)"; // 每行15个键
+            keySelector.style.gridGap = "0px"; // 按键之间的间距，可以根据需要调整
+        
+            keys.forEach(key => {
+                const button = document.createElement("button");
+                button.innerText = key;
+                button.style.width = `${keyWidth}px`;
+                button.style.height = `${keyHeight}px`;
+                button.onclick = () => selectKey(key);
+                keySelector.appendChild(button);
+            });
+        }
+        
+        // 打开按键选择框
+        function openKeySelector() {
+            initKeySelector();
+            document.getElementById("key-selector").style.display = "block";
+        }
+        
+        // 选择按键并关闭选择框
+        function selectKey(key) {
+            document.getElementById("key-type").innerText = key;
+            document.getElementById("key-selector").style.display = "none";
+        }
+        
+        // 更新宽度标签
+        function updateWidthLabel() {
+            const sliderValue = parseInt(document.getElementById("key-width").value) || 50;
+            keyWidth = Math.round(sliderValue / 10) * 10; // 四舍五入到最近的10的倍数
+            document.getElementById("width-label").innerText = keyWidth;
+            updateCrosshairSize();
+        }
+        
+        // 更新高度标签
+        function updateHeightLabel() {
+            const sliderValue = parseInt(document.getElementById("key-height").value) || 50;
+            keyHeight = Math.round(sliderValue / 10) * 10; // 四舍五入到最近的10的倍数
+            document.getElementById("height-label").innerText = keyHeight;
+            updateCrosshairSize();
+        }
+
+        // 更新十字框（灰色按键）的尺寸
+        function updateCrosshairSize() {
+            const crosshair = document.getElementById("crosshair");
+            crosshair.style.width = `${keyWidth}px`;
+            crosshair.style.height = `${keyHeight}px`;
+        }
+        // 记录点击位置并显示灰色按键样式
+        function recordPosition(event) {
+            const rect = event.target.getBoundingClientRect();
+            lastClickPos = {
+                x: roundToNearest5(event.clientX - rect.left),
+                y: roundToNearest5(event.clientY - rect.top)
+            };
+
+            const crosshair = document.getElementById("crosshair");
+            crosshair.style.left = `${lastClickPos.x}px`;
+            crosshair.style.top = `${lastClickPos.y}px`;
+            crosshair.style.display = "flex";
+            crosshair.addEventListener("mousedown", (e) => startDrag(e, crosshair));
+            crosshair.addEventListener("touchstart", (e) => startDrag(e, crosshair), {
+                passive: false
+            });
+            crosshair.addEventListener("mouseup", stopDrag);
+            crosshair.addEventListener("touchend", stopDrag);
+            updateCrosshairSize();
+        }
+        // 添加按键
+        function addButton() {
+            const type = document.getElementById("key-type").innerText || "按键";
+
+            // 创建按键元素
+            const button = document.createElement("div");
+            button.className = "button";
+            button.style.width = `${keyWidth}px`;
+            button.style.height = `${keyHeight}px`;
+            button.style.left = `${lastClickPos.x}px`;
+            button.style.top = `${lastClickPos.y}px`;
+            button.innerText = type;
+
+            // 保存配置信息，存储位置、大小等
+            const buttonConfig = {
+                type,
+                width: keyWidth,
+                height: keyHeight,
+                x: lastClickPos.x,
+                y: lastClickPos.y
+            };
+            buttons.push(buttonConfig);
+
+            // 添加触摸和鼠标拖动功能
+            button.addEventListener("mousedown", (e) => startDrag(e, button));
+            button.addEventListener("touchstart", (e) => startDrag(e, button), {
+                passive: false
+            });
+            button.addEventListener("mouseup", stopDragf);
+            button.addEventListener("touchend", stopDragf);          
+
+                        
+            document.getElementById("canvas").appendChild(button);
+        }
+        function stopDragf(event) { 
+            const clickedButton = event.target; // 获取被点击的按钮
+            const buttonConfig8 = {
+                type: clickedButton.innerText, 
+                x: parseInt(clickedButton.style.left), 
+                y: parseInt(clickedButton.style.top), 
+                width: parseInt(clickedButton.style.width), 
+                height: parseInt(clickedButton.style.height)
+            };
+            if (deleteMode) {
+                return;
+            };
+
+            if (index > -1) {buttons[index] = buttonConfig8;};
+        }
+        // 删除按键
+        function deleteButton(event, button) {
+            // 阻止事件冒泡，避免触发canvas的点击事件
+            //event.stopPropagation();
+            const clickedButton = event.target; // 获取被点击的按钮
+    const buttonConfig = buttons.find(config => 
+        config.type === clickedButton.innerText && 
+        config.x === parseInt(clickedButton.style.left) && 
+        config.y === parseInt(clickedButton.style.top) &&
+        config.width === parseInt(clickedButton.style.width) &&
+        config.height === parseInt(clickedButton.style.height)
+    );
+            index = buttons.indexOf(buttonConfig);
+            if (deleteMode!== true) {
+                return;
+            };
+            if (index > -1) {
+                buttons.splice(index, 1);
+                button.remove();
+            };
+        }
+
+        // 切换删除模式
+        function toggleDeleteMode() {
+            deleteMode = !deleteMode;
+            const button = document.querySelector("button[onclick='toggleDeleteMode()']");
+            button.style.backgroundColor = deleteMode ? "#f44336" : "#efefef"; // 更改按钮颜色，提示当前模式
+        }
+
+
+        // 实现按键拖动
+        function startDrag(e, button) {
+            e.preventDefault(); // 防止触摸事件导致滚动
+            deleteButton(e, button);
+            const rect = button.getBoundingClientRect();
+            const offsetX = (e.clientX || e.touches[0].clientX) - rect.left;
+            const offsetY = (e.clientY || e.touches[0].clientY) - rect.top;
+
+            function drag(e) {
+                const clientX = e.clientX || e.touches[0].clientX;
+                const clientY = e.clientY || e.touches[0].clientY;
+                button.style.left = `${roundToNearest5(clientX - offsetX)}px`;
+                button.style.top = `${roundToNearest5(clientY - offsetY)}px`;
+                //console.log("Updated buttonConfig:", clientX);
+                //lastClickPos = {
+                //    x: roundToNearest5(clientX - (keyWidth / 2)),
+                //    y: roundToNearest5(clientY - (keyHeight / 2))
+                //};
+
+            }
+            console.log(e);
+
+            function stopDrag() {
+
+                document.removeEventListener("mousemove", drag);
+                document.removeEventListener("mouseup", stopDrag);
+                document.removeEventListener("touchmove", drag);
+                document.removeEventListener("touchend", stopDrag);
+            }
+
+            document.addEventListener("mousemove", drag);
+            document.addEventListener("mouseup", stopDrag);
+            document.addEventListener("touchmove", drag, {
+                passive: false
+            });
+            document.addEventListener("touchend", stopDrag);
+        }
+        // 停止拖动并更新位置信息// 
+        //  document.addEventListener("touchend", function(event) {
+        // 获取触摸结束时的全局位置
+        //const touch = event.changedTouches[0]; // 获取触摸点
+        //   const globalTouchX = touch.pageX;
+        //    const globalTouchY = touch.pageY;
+
+        //    console.log("全局触摸位置：", globalTouchX, globalTouchY);});
+  function stopDrag(event) {
+    const crosshair = document.getElementById("crosshair");
+    if (!crosshair) {
+        console.error("未找到 ID 为 'crosshair' 的元素。");
+        return;
+    }
+
+    const rect = crosshair.getBoundingClientRect();
+
+    // 记录位置信息
+    const elementTop = rect.top;
+    const elementLeft = rect.left;
+    const elementWidth = rect.width;
+    const elementHeight = rect.height;
+
+    // 打印位置信息
+    console.log(`crosshair 元素位置: top = ${elementTop}px, left = ${elementLeft}px, width = ${elementWidth}px, height = ${elementHeight}px`);
+    lastClickPos = {
+        x: roundToNearest5(elementLeft), // 确认 roundToNearest5 函数是否定义
+        y: roundToNearest5(elementTop) // 确认 roundToNearest5 函数是否定义
+    };
+}
+
+
+        // 导出配置
+        function exportConfig() {
+            const config = buttons.map(button => ({
+                type: button.type,
+                width: button.width,
+                height: button.height,
+                x: roundToNearest5(button.x),
+                y: roundToNearest5(button.y)
+            }));
+            let typeMap = {
+    "H": "key_49",
+    "I": "key_48",
+    "J": "key_47",
+    "K": "key_46",
+    "L": "key_45",
+    "M": "key_44",
+    "N": "key_43",
+    "O": "key_42",
+    "P": "key_41",
+    "Q": "key_40",
+    "R": "key_39",
+    "S": "key_38",
+    "T": "key_37",
+    "U": "key_36",
+    "触控左": "m_11",
+    "触控中": "m_10",
+    "触控右": "m_9",
+    "Esc": "key_112",
+    "F1": "key_142",
+    "F2": "key_141",
+    "F3": "key_140",
+    "F4": "key_139",
+    "F5": "key_138",
+    "F6": "key_137",
+    "F7": "key_136",
+    "F8": "key_135",
+    "F9": "key_134",
+    "F10": "key_133",
+    "F11": "key_132",
+    "F12": "key_131",
+    "Del": "key_111",
+    "摇杆": "rocker_1",
+    "十字键": "dpad_1",
+    "Ctrl": "key_35",
+    "Win": "key_34",
+    "Alt": "key_33",
+    "Space": "key_32",
+    "Shift": "key_31",
+    "Tab": "key_30",
+    "Enter": "key_29",
+    "A": "key_66",
+    "B": "key_61",
+    "C": "key_59",
+    "D": "key_62",
+    "E": "key_57",
+    "F": "key_117",
+    "G": "key_113",
+    "V": "m_2",
+    "W": "m_s_3",
+    "X": "m_3",
+    "Y": "m_1",
+    "Z": "key_22",
+    "Insert": "key_21",
+    "↑": "key_20",
+    "↓": "key_19",
+    "←": "key_124",
+    "→": "key_54",
+    "ML": "key_53",
+    "MR": "key_52",
+    "MR+": "key_51",
+    "MM": "key_50",
+    "Home": "key_7",
+    "End": "key_16",
+    "PgUp": "key_15",
+    "PgDn": "key_14",
+    "1": "key_13",
+    "2": "key_12",
+    "3": "key_11",
+    "4": "key_10",
+    "5": "key_9",
+    "6": "key_8",
+    "7": "key_93",
+    "8": "key_92",
+    "9": "key_123",
+    "0": "key_122"
+}
+;
+            let convertedData = {};
+            config.forEach((item, index) => {
+                let key = typeMap[item.type];
+                if (key) {
+                    convertedData[key] = JSON.stringify({
+                        LEFT: item.x*window.devicePixelRatio,
+                        TOP: item.y*window.devicePixelRatio,
+                        WIDTH: item.width*window.devicePixelRatio,
+                        HEIGHT: item.height*window.devicePixelRatio,
+                        ENABLED: true
+                    });
+                }
+            });
+            for (let type in typeMap) {
+                let key = typeMap[type];
+                if (!convertedData[key]) {
+                    convertedData[key] = JSON.stringify({
+                        LEFT: 0,
+                        TOP: 0,
+                        WIDTH: 0,
+                        HEIGHT: 0,
+                        ENABLED: false
+                    });
+                }
+            }
+            console.log(JSON.stringify(convertedData, null, 4));
+
+            const blob = new Blob([JSON.stringify(convertedData, null, 2)], {
+                type: "application/json"
+            });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "buttons_config.txt";
+            link.click();
+        }
+
+        // 导入配置
+        function importConfig() {
+            document.getElementById("file-input").click();
+        }
+
+        // 处理导入文件
+        function handleFileInput(event) {
+            const file = event.target.files[0];
+            if (file && file.type === "application/json") {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const config = JSON.parse(e.target.result);
+                    buttons = config.map(buttonConfig => {
+                        // 创建并添加按键
+                        const button = document.createElement("div");
+                        button.className = "button";
+                        button.style.width = `${buttonConfig.width}px`;
+                        button.style.height = `${buttonConfig.height}px`;
+                        button.style.left = `${buttonConfig.x - roundToNearest5(buttonConfig.width / 2)}px`;
+                        button.style.top = `${buttonConfig.y - roundToNearest5(buttonConfig.height / 2)}px`;
+                        button.innerText = buttonConfig.type;
+                        document.getElementById("canvas").appendChild(button);
+                        return buttonConfig; // 重新保存配置
+                    });
+                };
+                reader.readAsText(file);
+            } else {
+                alert("请选择有效的配置文件！");
+            }
+        }
+
+        // 监听标题点击，切换控件面板的位置
+        document.getElementById("panel-title").addEventListener("click", function() {
+            const controlPanel = document.getElementById("control-panel");
+            const isAtBottom = controlPanel.style.top === "50%";
+
+            if (isAtBottom) {
+                controlPanel.style.top = "10px"; // 复原控件位置
+            } else {
+                controlPanel.style.top = "50%"; // 将控件移至屏幕 50% 位置
+            }
+        });
+        initKeySelector(); // 初始化按键选择框
+    </script>
+    <button id="fullscreen-btn" onclick="enterFullScreen()" style="position: fixed;top: 10px;right: 10px;padding: 10px 20px;font-size: 18px;background-color: #4CAF50;color: white;border: none;border-radius: 5px;cursor: pointer;z-index: 1000;transition: background-color 0.3s;">进入全屏</button>
+    <script>
+        // 进入全屏模式
+        function enterFullScreen() {
+            const element = document.documentElement;
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) { // Firefox
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) { // Chrome, Safari, Opera
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) { // IE/Edge
+                element.msRequestFullscreen();
+            }
+
+            // 隐藏按钮
+            document.getElementById("fullscreen-btn").style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
