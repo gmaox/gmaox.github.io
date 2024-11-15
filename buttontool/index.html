@@ -229,18 +229,27 @@
             button.innerText = type;
             if (Loadtype.trim() !== ""){
     button.innerText = Loadtype;
-    Loadtype = "";
-            }
-
-            // 保存配置信息，存储位置、大小等
-            const buttonConfig = {
-                type,
+    const buttonConfig = {
+                type: Loadtype,
                 width: keyWidth,
                 height: keyHeight,
                 x: lastClickPos.x,
                 y: lastClickPos.y
             };
+            Loadtype = "";
             buttons.push(buttonConfig);
+            }else{
+    const buttonConfig = {
+                type,
+                width: keyWidth,
+                height: keyHeight,
+                x: lastClickPos.x,
+                y: lastClickPos.y
+};buttons.push(buttonConfig);};
+
+            // 保存配置信息，存储位置、大小等
+            
+            
 
             // 添加触摸和鼠标拖动功能
             button.addEventListener("mousedown", (e) => startDrag(e, button));
@@ -513,15 +522,16 @@ let typeMap = {
             for (const [key, value] of Object.entries(config)) {
                 // 二次解析嵌套的 JSON 字符串
                 const parsedValue = JSON.parse(value);
-
+console.log(value);
                 // 检查 ENABLED 是否为真
                 if (parsedValue.ENABLED) {
+                    console.log(key);
                      Loadtype = key;
                     for (const [key, value] of Object.entries(typeMap)) {
     if (value === Loadtype) {
         Loadtype = key; // 替换为键
         break; // 如果只需要替换第一个匹配项，可以在找到后退出循环
-    }
+    }console.log(Loadtype);
                     }
                      keyHeight = parsedValue.HEIGHT/window.devicePixelRatio;
                      keyWidth = parsedValue.WIDTH/window.devicePixelRatio;
