@@ -84,6 +84,56 @@
             cursor: pointer;
             border-radius: 4px;
         }
+
+        /* 模态框背景 */
+        .modal {
+            display: none;
+            /* 默认隐藏 */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        /* 模态框内容 */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 2% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* 按钮样式 */
+        .modal-buttons button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #confirmButton {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #cancelButton {
+            background-color: #f44336;
+            color: white;
+        }
+
+        #confirmRenameButton {
+            background-color: #4CAF50;
+            color: white;
+        }
     </style>
 </head>
 
@@ -93,7 +143,7 @@
         <hr id="panel-title">
         <button id="bubu" onclick="bubu()" style="position: fixed;top: 10px;left: 20px;padding: 5px 5px;font-size: 10px;">(*￣▽￣*) </button>
         <div id="bububu" style="display: none;">
-        <button id="40button" onclick="bu(40)" style="position: fixed;top: 10px;left: 20px;padding: 5px 5px;font-size: 10px;">40</button><button id="50button" onclick="bu(50)" style="position: fixed;top: 10px;left: 45px;padding: 5px 5px;font-size: 10px;">50</button><button id="70button" onclick="bu(80)" style="position: fixed;top: 10px;left: 70px;padding: 5px 5px;font-size: 10px;">80</button><button id="1450button" onclick="bu('14x5')" style="position: fixed;top: 10px;left: 95px;padding: 5px 5px;font-size: 10px;">14x5</button>
+            <button id="40button" onclick="bu(40)" style="position: fixed;top: 10px;left: 20px;padding: 5px 5px;font-size: 10px;">40</button><button id="50button" onclick="bu(50)" style="position: fixed;top: 10px;left: 45px;padding: 5px 5px;font-size: 10px;">50</button><button id="70button" onclick="bu(80)" style="position: fixed;top: 10px;left: 70px;padding: 5px 5px;font-size: 10px;">80</button><button id="1450button" onclick="bu('14x5')" style="position: fixed;top: 10px;left: 95px;padding: 5px 5px;font-size: 10px;">14x5</button>
         </div>
         <label>
             <button id="key-type" onclick="openKeySelector()" style="position: fixed;top: 40px;right: 20px;padding: 5px 5px;font-size: 18px;">A</button>
@@ -120,7 +170,8 @@
                 <span id="merged-label">&nbsp;&nbsp;&nbsp;50</span> px
                 <input type="range" id="merged-slider" min="20" max="200" value="50" oninput="updateMergedLabel()">
                 <br>
-                <button id="relayadd" onclick="relayadd1()" >接力添加</button>
+                <button onclick="modifyKeybu()">按键改名</button>
+                <button id="relayadd" onclick="relayadd1()">接力添加</button>
             </label>
 
         </div>
@@ -128,6 +179,9 @@
         <button onclick="importConfig()">导入配置</button>
         <button onclick="toggleDeleteMode()">删除按键</button>
         <button onclick="addButton()">添加按键</button>
+        <div id="cf666" style="display: none;position: fixed;top: 10px;left: 70px;padding: 5px 5px;font-size: 10px;">不要尝试重复添加按键,不支持(ー_ー)</div>
+        <div id="qtxwz" style="display: none;position: fixed;top: 10px;left: 80px;padding: 5px 5px;font-size: 10px;">请填写完整的按键名称</div>
+        <div id="ts666" style="display: none;position: fixed;margin: 0% auto;padding: 5px 5px;font-size: 6px;">点击小横线可将布局移至下方</div>
     </div>
 
     <div id="canvas" onclick="recordPosition(event)">
@@ -138,7 +192,35 @@
     <div id="key-selector">
         <div id="keys"></div>
     </div>
+    <!-- 模态框 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p>是否导入之前编辑的 JSON 文件？</p>
+            <p>
+                注意：只能导入由该网页生成的 JSON 文件。如果没有文件，请点取消，网页将使用默认的配置文件。
+            </p>
+            <p>当你再次点击按键改名按钮关闭名称编辑模式时网页会弹出下载请求，该下载是编辑名称的成品，既可以导入月光也可以导入该网页中。</p>
+            <p>Tips:keyboards.json、buttons_config.txt，前者存储名称后者存储布局</p>
+            <p style="color:#FF0000;">改名之前先保存已编辑的布局txt，先编辑布局后改名。</p>
 
+            <div class="modal-buttons">
+                <button id="confirmButton">确定</button>
+                <button id="cancelButton">取消</button>
+            </div>
+        </div>
+    </div>
+    <!-- 改名模态框 -->
+    <div id="renameModal" class="modal">
+        <div class="modal-content">
+            <p id="modalMessage">目标：<span id="originalKey"></span>，改为什么？</p>
+            <input type="text" id="newKeyInput" placeholder="输入新名称" style="width: 80%; height: 40px; font-size: 16px; padding: 10px;" />
+            <div class="modal-buttons">
+                <button id="cancelRenameButton">取消</button>
+                <button id="confirmRenameButton">确定</button>
+            </div>
+        </div>
+    </div>
+    <input type="file" id="fileInput" style="display:none;" />
     <input type="file" id="file-input" style="display: none" onchange="handleFileInput(event)" />
 
     <script>
@@ -151,6 +233,8 @@
         let keyWidth = 50; // 初始化宽度 
         let keyHeight = 50; // 初始化高度
         let deleteMode = false; // 删除模式标志
+        let modifyKeyMode = false; //改名模式
+        let modifyKeyMode1 = true; //第一次进入显示选择框
         let index = -1; // 按键索引
         let Loadtype = "" //载入标志
         let isMerged = false; //合并标志
@@ -222,49 +306,49 @@
             updateCrosshairSize();
         }
         //开启预设
-        function bubu(){
-        document.getElementById("bubu").style.display = "none";
-        document.getElementById("bububu").style.display = "block";
-}
+        function bubu() {
+            document.getElementById("bubu").style.display = "none";
+            document.getElementById("bububu").style.display = "block";
+        }
         //预设实现
         function bu(roundedValue) {
-    // 更新标签文本
-    document.getElementById("merged-label").innerText = `\u00A0\u00A0\u00A0${roundedValue}`;
-    document.getElementById("width-label").innerText = `\u00A0\u00A0\u00A0${roundedValue}`;
-    document.getElementById("height-label").innerText = `\u00A0\u00A0\u00A0${roundedValue}`;
+            // 更新标签文本
+            document.getElementById("merged-label").innerText = `\u00A0\u00A0\u00A0${roundedValue}`;
+            document.getElementById("width-label").innerText = `\u00A0\u00A0\u00A0${roundedValue}`;
+            document.getElementById("height-label").innerText = `\u00A0\u00A0\u00A0${roundedValue}`;
 
-    // 设置 keyWidth 和 keyHeight 为 roundedValue
-    keyWidth = roundedValue;
-    keyHeight = roundedValue;
+            // 设置 keyWidth 和 keyHeight 为 roundedValue
+            keyWidth = roundedValue;
+            keyHeight = roundedValue;
 
-    // 根据 roundedValue 调整拖动条的值
-    document.getElementById("key-width").value = keyWidth;
-    document.getElementById("key-height").value = keyHeight;
-    document.getElementById("merged-slider").value = keyWidth;
+            // 根据 roundedValue 调整拖动条的值
+            document.getElementById("key-width").value = keyWidth;
+            document.getElementById("key-height").value = keyHeight;
+            document.getElementById("merged-slider").value = keyWidth;
 
-    // 输出值，检查是否为 40
-    console.log(roundedValue === "40");
+            // 输出值，检查是否为 40
+            console.log(roundedValue === "40");
 
-    // 更新光标大小或其他相关操作
-    updateCrosshairSize();
+            // 更新光标大小或其他相关操作
+            updateCrosshairSize();
 
-    // 如果 roundedValue 为 "14x5" 时，设置为特定值
-    if (roundedValue === "14x5") {
-        keyWidth = 140;
-        keyHeight = 50;
-        // 更新显示标签
-        document.getElementById("height-label").innerText = `\u00A0\u00A0\u00A0${keyHeight}`;
-        document.getElementById("width-label").innerText = `\u00A0\u00A0\u00A0${keyWidth}`;
-        
-        // 更新拖动条的值
-        document.getElementById("key-width").value = keyWidth;
-        document.getElementById("key-height").value = keyHeight;
-        document.getElementById("merged-slider").value = keyWidth;
+            // 如果 roundedValue 为 "14x5" 时，设置为特定值
+            if (roundedValue === "14x5") {
+                keyWidth = 140;
+                keyHeight = 50;
+                // 更新显示标签
+                document.getElementById("height-label").innerText = `\u00A0\u00A0\u00A0${keyHeight}`;
+                document.getElementById("width-label").innerText = `\u00A0\u00A0\u00A0${keyWidth}`;
 
-        // 调用更新光标的函数
-        updateCrosshairSize();
-    }
-}
+                // 更新拖动条的值
+                document.getElementById("key-width").value = keyWidth;
+                document.getElementById("key-height").value = keyHeight;
+                document.getElementById("merged-slider").value = keyWidth;
+
+                // 调用更新光标的函数
+                updateCrosshairSize();
+            }
+        }
         // 切换滑动条模式
         function toggleSliders() {
             isMerged = !isMerged;
@@ -332,7 +416,13 @@
         // 添加按键
         function addButton() {
             const type = document.getElementById("key-type").innerText || "按键";
-
+            if (buttons.some(button => button.type === type) && Loadtype.trim() == "") {
+            document.getElementById("cf666").style.display = "block";
+            setTimeout(function() {
+                document.getElementById("cf666").style.display = "none";
+            }, 2000);
+                return; // 如果匹配，直接返回
+            } 
             // 创建按键元素
             const button = document.createElement("div");
             button.className = "button";
@@ -377,33 +467,35 @@
 
 
             document.getElementById("canvas").appendChild(button);
-            if (relayadd){
-    openKeySelector();
-}
+            if (relayadd) {
+                openKeySelector();
+            }
         }
-        function relayadd1(){
-    if (relayadd){
-    document.getElementById("relayadd").innerText = "接力添加";
-    relayadd = false;
-}else{
-    document.getElementById("relayadd").innerText = "关闭接力";
-    relayadd = true;
-}
-}
+
+        function relayadd1() {
+            if (relayadd) {
+                document.getElementById("relayadd").innerText = "接力添加";
+                relayadd = false;
+            } else {
+                document.getElementById("relayadd").innerText = "关闭接力";
+                relayadd = true;
+            }
+        }
+
         function stopDragf(event) {
             const clickedButton = event.target; // 获取被点击的按钮
-            const buttonConfig8 = {
-                type: clickedButton.innerText,
-                x: parseInt(clickedButton.style.left),
-                y: parseInt(clickedButton.style.top),
-                width: parseInt(clickedButton.style.width),
-                height: parseInt(clickedButton.style.height)
-            };
             if (deleteMode) {
                 return;
             };
 
             if (index > -1) {
+                const buttonConfig8 = {
+                type: buttons[index].type,
+                x: parseInt(clickedButton.style.left),
+                y: parseInt(clickedButton.style.top),
+                width: parseInt(clickedButton.style.width),
+                height: parseInt(clickedButton.style.height)
+            };
                 buttons[index] = buttonConfig8;
             };
         }
@@ -412,8 +504,7 @@
             // 阻止事件冒泡，避免触发canvas的点击事件
             //event.stopPropagation();
             const clickedButton = event.target; // 获取被点击的按钮
-            const buttonConfig = buttons.find(config =>
-                config.type === clickedButton.innerText &&
+            const buttonConfig = [...buttons].reverse().find(config =>
                 config.x === parseInt(clickedButton.style.left) &&
                 config.y === parseInt(clickedButton.style.top) &&
                 config.width === parseInt(clickedButton.style.width) &&
@@ -428,19 +519,567 @@
                 button.remove();
             };
         }
+        let keydatadefault = {
+            "data": {
+                "rocker": [{
+                    "name": "摇杆",
+                    "elementId": "rocker_1",
+                    "leftCode": 29,
+                    "rightCode": 32,
+                    "upCode": 51,
+                    "downCode": 47,
+                    "middleCode": 59,
+                    "desc": "摇杆"
+                }],
+                "dpad": [{
+                    "name": "十字键",
+                    "elementId": "dpad_1",
+                    "leftCode": 29,
+                    "rightCode": 32,
+                    "upCode": 51,
+                    "downCode": 47,
+                    "desc": "十字键"
+                }],
+                "mouse": [{
+                        "name": "ML",
+                        "code": 1,
+                        "desc": "ML"
+                    },
+                    {
+                        "name": "MR",
+                        "code": 3,
+                        "desc": "MR"
+                    },
+                    {
+                        "name": "MR+",
+                        "code": 3,
+                        "switchButton": 1,
+                        "desc": "MR+"
+                    },
+                    {
+                        "name": "MM",
+                        "code": 2,
+                        "desc": "MM"
+                    },
+                    {
+                        "name": "触控板右",
+                        "code": 9,
+                        "desc": "触控板右"
+                    },
+                    {
+                        "name": "触控板",
+                        "code": 10,
+                        "desc": "触控板"
+                    },
+                    {
+                        "name": "触控板左",
+                        "code": 11,
+                        "desc": "触控板左"
+                    }
+                ],
+                "keystroke": [{
+                        "name": "Esc",
+                        "code": 111,
+                        "desc": "Esc"
+                    },
+                    {
+                        "name": "F1",
+                        "code": 131,
+                        "desc": "F1"
+                    },
+                    {
+                        "name": "F2",
+                        "code": 132,
+                        "desc": "F2"
+                    },
+                    {
+                        "name": "F3",
+                        "code": 133,
+                        "desc": "F3"
+                    },
+                    {
+                        "name": "F4",
+                        "code": 134,
+                        "desc": "F4"
+                    },
+                    {
+                        "name": "F5",
+                        "code": 135,
+                        "desc": "F5"
+                    },
+                    {
+                        "name": "F6",
+                        "code": 136,
+                        "desc": "F6"
+                    },
+                    {
+                        "name": "F7",
+                        "code": 137,
+                        "desc": "F7"
+                    },
+                    {
+                        "name": "F8",
+                        "code": 138,
+                        "desc": "F8"
+                    },
+                    {
+                        "name": "F9",
+                        "code": 139,
+                        "desc": "F9"
+                    },
+                    {
+                        "name": "F10",
+                        "code": 140,
+                        "desc": "F10"
+                    },
+                    {
+                        "name": "F11",
+                        "code": 141,
+                        "desc": "F11"
+                    },
+                    {
+                        "name": "F12",
+                        "code": 142,
+                        "desc": "F12"
+                    },
+                    {
+                        "name": "Del",
+                        "code": 112,
+                        "desc": "Del"
+                    },
+                    {
+                        "name": "Home",
+                        "code": 122,
+                        "desc": "Home"
+                    },
+                    {
+                        "name": "End",
+                        "code": 123,
+                        "desc": "End"
+                    },
+                    {
+                        "name": "PgUp",
+                        "code": 92,
+                        "desc": "PgUp"
+                    },
+                    {
+                        "name": "PgDn",
+                        "code": 93,
+                        "desc": "PgDn"
+                    },
+                    {
+                        "name": "1",
+                        "code": 8,
+                        "desc": "1"
+                    },
+                    {
+                        "name": "2",
+                        "code": 9,
+                        "desc": "2"
+                    },
+                    {
+                        "name": "3",
+                        "code": 10,
+                        "desc": "3"
+                    },
+                    {
+                        "name": "4",
+                        "code": 11,
+                        "desc": "4"
+                    },
+                    {
+                        "name": "5",
+                        "code": 12,
+                        "desc": "5"
+                    },
+                    {
+                        "name": "6",
+                        "code": 13,
+                        "desc": "6"
+                    },
+                    {
+                        "name": "7",
+                        "code": 14,
+                        "desc": "7"
+                    },
+                    {
+                        "name": "8",
+                        "code": 15,
+                        "desc": "8"
+                    },
+                    {
+                        "name": "9",
+                        "code": 16,
+                        "desc": "9"
+                    },
+                    {
+                        "name": "0",
+                        "code": 7,
+                        "desc": "0"
+                    },
+                    {
+                        "name": "Ctrl",
+                        "code": 113,
+                        "desc": "Ctrl"
+                    },
+                    {
+                        "name": "Win",
+                        "code": 117,
+                        "desc": "Win"
+                    },
+                    {
+                        "name": "Alt",
+                        "code": 57,
+                        "desc": "Alt"
+                    },
+                    {
+                        "name": "Space",
+                        "code": 62,
+                        "desc": "Space"
+                    },
+                    {
+                        "name": "Shift",
+                        "code": 59,
+                        "desc": "Shift"
+                    },
+                    {
+                        "name": "Tab",
+                        "code": 61,
+                        "desc": "Tab"
+                    },
+                    {
+                        "name": "Enter",
+                        "code": 66,
+                        "desc": "Enter"
+                    },
+                    {
+                        "name": "A",
+                        "code": 29,
+                        "desc": "A"
+                    },
+                    {
+                        "name": "B",
+                        "code": 30,
+                        "desc": "B"
+                    },
+                    {
+                        "name": "C",
+                        "code": 31,
+                        "desc": "C"
+                    },
+                    {
+                        "name": "D",
+                        "code": 32,
+                        "desc": "D"
+                    },
+                    {
+                        "name": "E",
+                        "code": 33,
+                        "desc": "E"
+                    },
+                    {
+                        "name": "F",
+                        "code": 34,
+                        "desc": "F"
+                    },
+                    {
+                        "name": "G",
+                        "code": 35,
+                        "desc": "G"
+                    },
+                    {
+                        "name": "H",
+                        "code": 36,
+                        "desc": "H"
+                    },
+                    {
+                        "name": "I",
+                        "code": 37,
+                        "desc": "I"
+                    },
+                    {
+                        "name": "J",
+                        "code": 38,
+                        "desc": "J"
+                    },
+                    {
+                        "name": "K",
+                        "code": 39,
+                        "desc": "K"
+                    },
+                    {
+                        "name": "L",
+                        "code": 40,
+                        "desc": "L"
+                    },
+                    {
+                        "name": "M",
+                        "code": 41,
+                        "desc": "M"
+                    },
+                    {
+                        "name": "N",
+                        "code": 42,
+                        "desc": "N"
+                    },
+                    {
+                        "name": "O",
+                        "code": 43,
+                        "desc": "O"
+                    },
+                    {
+                        "name": "P",
+                        "code": 44,
+                        "desc": "P"
+                    },
+                    {
+                        "name": "Q",
+                        "code": 45,
+                        "desc": "Q"
+                    },
+                    {
+                        "name": "R",
+                        "code": 46,
+                        "desc": "R"
+                    },
+                    {
+                        "name": "S",
+                        "code": 47,
+                        "desc": "S"
+                    },
+                    {
+                        "name": "T",
+                        "code": 48,
+                        "desc": "T"
+                    },
+                    {
+                        "name": "U",
+                        "code": 49,
+                        "desc": "U"
+                    },
+                    {
+                        "name": "V",
+                        "code": 50,
+                        "desc": "V"
+                    },
+                    {
+                        "name": "W",
+                        "code": 51,
+                        "desc": "W"
+                    },
+                    {
+                        "name": "X",
+                        "code": 52,
+                        "desc": "X"
+                    },
+                    {
+                        "name": "Y",
+                        "code": 53,
+                        "desc": "Y"
+                    },
+                    {
+                        "name": "Z",
+                        "code": 54,
+                        "desc": "Z"
+                    },
+                    {
+                        "name": "Insert",
+                        "code": 124,
+                        "desc": "Insert"
+                    },
+                    {
+                        "name": "↑",
+                        "code": 19,
+                        "desc": "↑"
+                    },
+                    {
+                        "name": "↓",
+                        "code": 20,
+                        "desc": "↓"
+                    },
+                    {
+                        "name": "←",
+                        "code": 21,
+                        "desc": "←"
+                    },
+                    {
+                        "name": "→",
+                        "code": 22,
+                        "desc": "→"
+                    }
+                ]
+            }
+        }
+        let keydata = keydatadefault
+        //按键改名
+        let isModalVisible = false; // 标记模态框是否显示
 
+        function modifyKey(event, button) {
+            const clickedButton = event.target; // 获取被点击的按钮
+            const buttonConfig = [...buttons].reverse().find(config =>
+                config.x === parseInt(clickedButton.style.left) &&
+                config.y === parseInt(clickedButton.style.top) &&
+                config.width === parseInt(clickedButton.style.width) &&
+                config.height === parseInt(clickedButton.style.height)
+            );
+            const originalKey = buttonConfig.type;
+            var newKey = "";
+
+            // 动态生成模态框消息内容
+            const modalMessage = document.getElementById("modalMessage");
+            const newKeyInput = document.getElementById("newKeyInput");
+
+            if (clickedButton.innerText === originalKey) {
+                newKeyInput.value = "";
+                modalMessage.innerText = `目标：${originalKey}，改为什么？`;
+            } else {
+                newKeyInput.value = clickedButton.innerText;
+                modalMessage.innerText = `目标：${originalKey}，原始值：${clickedButton.innerText}，改为什么？`;
+            }
+
+            // 显示模态框
+            const modal = document.getElementById("renameModal");
+            modal.style.display = "block";
+            isModalVisible = true; // 设置标志位为 true，表示模态框正在显示
+
+            // 创建 Promise 以阻塞执行，等待模态框关闭
+            const waitForModalClose = new Promise((resolve, reject) => {
+                // 点击确认按钮时
+                document.getElementById("confirmRenameButton").onclick = function() {
+                    newKey = newKeyInput.value.trim();
+                    modal.style.display = "none";
+                    isModalVisible = false; // 隐藏模态框后，设置标志位为 false
+                    resolve(); // 关闭模态框后调用 resolve，继续执行
+                };
+
+                // 点击取消按钮时
+                document.getElementById("cancelRenameButton").onclick = function() {
+                    modal.style.display = "none"; // 隐藏模态框
+                    isModalVisible = false; // 隐藏模态框后，设置标志位为 false
+                    resolve(); // 关闭模态框后调用 resolve，继续执行
+                };
+                newKeyInput.addEventListener("keydown", function(event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault(); // 防止默认的回车行为（例如换行）
+                        document.getElementById("confirmRenameButton").click(); // 触发确认按钮点击
+                    }
+                });
+            });
+
+            // 使用 async/await 等待模态框关闭
+            async function executeAfterModal() {
+                await waitForModalClose; // 等待模态框关闭
+                // 继续执行下面的代码
+
+                if (!originalKey || !newKey) {
+                    document.getElementById("qtxwz").style.display = "block";
+                    setTimeout(function() {
+                        document.getElementById("qtxwz").style.display = "none";
+                    }, 2000);
+                    return;
+                }
+
+                let found = false;
+
+                // 遍历数据结构，查找并更新按键名称
+                for (let category in keydata.data) {
+                    keydata.data[category].forEach((item) => {
+                        if (item.desc === originalKey) {
+                            item.name = newKey; // 修改按键名称
+                            found = true;
+                        }
+                    });
+                }
+
+                if (found) {
+                    button.innerText = newKey;
+                    console.log(JSON.stringify(keydata, null, 2));
+                } else {
+                    alert("未找到符合条件的按键！可能是导入文件不正确，请尝试刷新页面解决");
+                }
+            }
+
+            executeAfterModal(); // 执行等待模态框关闭后的代码
+        }
         // 切换删除模式
         function toggleDeleteMode() {
             deleteMode = !deleteMode;
             const button = document.querySelector("button[onclick='toggleDeleteMode()']");
             button.style.backgroundColor = deleteMode ? "#f44336" : "#efefef"; // 更改按钮颜色，提示当前模式
+            if (modifyKeyMode) {
+                modifyKeybu();
+            }
         }
+        //改名模式
+        function modifyKeybu() {
+            modifyKeyMode = !modifyKeyMode;
+            const button = document.querySelector("button[onclick='modifyKeybu()']");
+            button.style.backgroundColor = modifyKeyMode ? "#A2FFC5" : "#efefef"; // 更改按钮颜色提示
 
+            if (modifyKeyMode) {
+                if (modifyKeyMode1) {
+                    modifyKeyMode1 = !modifyKeyMode1;
+                    // 显示模态框
+                    const modal = document.getElementById("modal");
+                    modal.style.display = "block";
+
+                    // 添加模态框按钮事件
+                    document.getElementById("confirmButton").onclick = () => {
+                        modal.style.display = "none"; // 隐藏模态框
+                        document.getElementById("fileInput").click(); // 触发文件选择框
+                    };
+
+                    document.getElementById("cancelButton").onclick = () => {
+                        modal.style.display = "none"; // 隐藏模态框
+                    };
+
+                    // 文件选择框事件
+                    const fileInput = document.getElementById("fileInput");
+                    fileInput.addEventListener("change", function(event) {
+                        const file = event.target.files[0];
+                        if (file && file.type === "text/plain") {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                try {
+                                    keydata = JSON.parse(e.target.result);
+                                    console.log("文件内容：", keydata);
+                                } catch (error) {
+                                    alert("文件内容不是有效的 JSON 格式，请检查文件内容！");
+                                    console.error(error);
+                                }
+                            };
+                            reader.onerror = function() {
+                                console.error("文件读取失败");
+                            };
+                            reader.readAsText(file);
+                        } else {
+                            alert("文件类型不正确，请选择 .txt 文件！");
+                        }
+                    });
+                }
+            } else {
+                // 导出编辑后的 JSON 文件
+                const blob = new Blob([JSON.stringify(keydata, null, 2)], {
+                    type: "application/json",
+                });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "keyboards.json";
+                link.click();
+            }
+            // 如果处于删除模式，关闭删除模式
+            if (deleteMode) {
+                toggleDeleteMode();
+            }
+        }
 
         // 实现按键拖动
         function startDrag(e, button) {
             e.preventDefault(); // 防止触摸事件导致滚动
             deleteButton(e, button);
+            if (modifyKeyMode) {
+                modifyKey(e, button);
+            }
             const rect = button.getBoundingClientRect();
             const offsetX = (e.clientX || e.touches[0].clientX) - rect.left;
             const offsetY = (e.clientY || e.touches[0].clientY) - rect.top;
@@ -644,6 +1283,14 @@
         function handleFileInput(event) {
             const file = event.target.files[0];
             if (file && file.type === "text/plain") {
+                //导入前初始化
+                buttons = [];
+                // 获取所有类名为 "button" 的元素
+                const buttonsi = document.querySelectorAll(".button");
+                // 遍历每个元素并从 DOM 中删除
+                buttonsi.forEach(button => {
+                    button.remove();
+                });
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const config = JSON.parse(e.target.result);
@@ -680,20 +1327,25 @@
             } else {
                 alert("请选择有效的配置文件！");
             }
+
         }
 
         // 监听标题点击，切换控件面板的位置
         document.getElementById("panel-title").addEventListener("click", function() {
             const controlPanel = document.getElementById("control-panel");
-            const isAtBottom = controlPanel.style.top === "50%";
+            const isAtBottom = controlPanel.style.top === "60%";
 
             if (isAtBottom) {
                 controlPanel.style.top = "10px"; // 复原控件位置
             } else {
-                controlPanel.style.top = "50%"; // 将控件移至屏幕 50% 位置
+                controlPanel.style.top = "60%"; // 将控件移至屏幕 50% 位置
             }
         });
-        initKeySelector(); // 初始化按键选择框
+        //initKeySelector(); // 初始化按键选择框
+        //document.getElementById("ts666").style.display = "block";
+        //setTimeout(function() {
+        //    document.getElementById("ts666").style.display = "none";
+        //}, 5000);
     </script>
     <button id="fullscreen-btn" onclick="enterFullScreen()" style="position: fixed;top: 10px;right: 10px;padding: 10px 20px;font-size: 18px;background-color: #4CAF50;color: white;border: none;border-radius: 5px;cursor: pointer;z-index: 1000;transition: background-color 0.3s;">进入全屏</button>
     <script>
