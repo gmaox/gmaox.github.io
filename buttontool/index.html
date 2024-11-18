@@ -143,7 +143,7 @@
         <hr id="panel-title">
         <button id="bubu" onclick="bubu()" style="position: fixed;top: 10px;left: 20px;padding: 5px 5px;font-size: 10px;">(*￣▽￣*) </button>
         <div id="bububu" style="display: none;">
-            <button id="40button" onclick="bu(40)" style="position: fixed;top: 10px;left: 20px;padding: 5px 5px;font-size: 10px;">40</button><button id="50button" onclick="bu(50)" style="position: fixed;top: 10px;left: 45px;padding: 5px 5px;font-size: 10px;">50</button><button id="70button" onclick="bu(80)" style="position: fixed;top: 10px;left: 70px;padding: 5px 5px;font-size: 10px;">80</button><button id="1450button" onclick="bu('14x5')" style="position: fixed;top: 10px;left: 95px;padding: 5px 5px;font-size: 10px;">14x5</button>
+            <button id="40button" onclick="bu(40)" style="position: fixed;top: 10px;left: 20px;padding: 5px 5px;font-size: 10px;">40</button><button id="50button" onclick="bu(50)" style="position: fixed;top: 10px;left: 45px;padding: 5px 5px;font-size: 10px;">50</button><button id="70button" onclick="bu(80)" style="position: fixed;top: 10px;left: 70px;padding: 5px 5px;font-size: 10px;">80</button><button id="1450button" onclick="bu('8x4')" style="position: fixed;top: 10px;left: 95px;padding: 5px 5px;font-size: 10px;">8x4</button>
         </div>
         <label>
             <button id="key-type" onclick="openKeySelector()" style="position: fixed;top: 40px;right: 20px;padding: 5px 5px;font-size: 18px;">A</button>
@@ -201,7 +201,7 @@
             </p>
             <p>当你再次点击按键改名按钮关闭名称编辑模式时网页会弹出下载请求，该下载是编辑名称的成品，既可以导入月光也可以导入该网页中。</p>
             <p>Tips:keyboards.json、buttons_config.txt，前者存储名称后者存储布局</p>
-            <p style="color:#FF0000;">改名之前先保存已编辑的布局txt，先编辑布局后改名。</p>
+            <p style="color:#FF0000;">改名之前先保存已编辑的布局txt，先编辑布局后改名。axx最新版1108疑似不支持导入，可使用旧版。</p>
 
             <div class="modal-buttons">
                 <button id="confirmButton">确定</button>
@@ -326,16 +326,13 @@
             document.getElementById("key-height").value = keyHeight;
             document.getElementById("merged-slider").value = keyWidth;
 
-            // 输出值，检查是否为 40
-            console.log(roundedValue === "40");
-
             // 更新光标大小或其他相关操作
             updateCrosshairSize();
 
             // 如果 roundedValue 为 "14x5" 时，设置为特定值
-            if (roundedValue === "14x5") {
-                keyWidth = 140;
-                keyHeight = 50;
+            if (roundedValue === "8x4") {
+                keyWidth = 80;
+                keyHeight = 40;
                 // 更新显示标签
                 document.getElementById("height-label").innerText = `\u00A0\u00A0\u00A0${keyHeight}`;
                 document.getElementById("width-label").innerText = `\u00A0\u00A0\u00A0${keyWidth}`;
