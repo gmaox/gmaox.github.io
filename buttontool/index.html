@@ -143,7 +143,7 @@
         <hr id="panel-title">
         <button id="bubu" onclick="bubu()" style="position: fixed;top: 10px;left: 20px;padding: 5px 5px;font-size: 10px;">(*￣▽￣*) </button>
         <div id="bububu" style="display: none;">
-            <button id="40button" onclick="bu(40)" style="position: fixed;top: 10px;left: 20px;padding: 5px 5px;font-size: 10px;">40</button><button id="50button" onclick="bu(50)" style="position: fixed;top: 10px;left: 45px;padding: 5px 5px;font-size: 10px;">50</button><button id="70button" onclick="bu(80)" style="position: fixed;top: 10px;left: 70px;padding: 5px 5px;font-size: 10px;">80</button><button id="1450button" onclick="bu('8x4')" style="position: fixed;top: 10px;left: 95px;padding: 5px 5px;font-size: 10px;">8x4</button>
+            <button id="40button" onclick="bu(40)" style="position: fixed;top: 10px;left: 20px;padding: 5px 5px;font-size: 10px;">40</button><button id="50button" onclick="bu(50)" style="position: fixed;top: 10px;left: 45px;padding: 5px 5px;font-size: 10px;">50</button><button id="70button" onclick="bu(80)" style="position: fixed;top: 10px;left: 70px;padding: 5px 5px;font-size: 10px;">80</button><button id="1450button" onclick="bu('8x4')" style="position: fixed;top: 10px;left: 95px;padding: 5px 5px;font-size: 10px;">8x4</button><button id="60button" onclick="bu(60)" style="position: fixed;top: 10px;left: 125px;padding: 5px 5px;font-size: 10px;">60</button><button id="1460button" onclick="bu('14x6')" style="position: fixed;top: 10px;left: 145px;padding: 5px 5px;font-size: 10px;">14x6</button>
         </div>
         <label>
             <button id="key-type" onclick="openKeySelector()" style="position: fixed;top: 40px;right: 20px;padding: 5px 5px;font-size: 18px;">A</button>
@@ -329,10 +329,25 @@
             // 更新光标大小或其他相关操作
             updateCrosshairSize();
 
-            // 如果 roundedValue 为 "14x5" 时，设置为特定值
+            // 如果 roundedValue 为 "" 时，设置为特定值
             if (roundedValue === "8x4") {
                 keyWidth = 80;
                 keyHeight = 40;
+                // 更新显示标签
+                document.getElementById("height-label").innerText = `\u00A0\u00A0\u00A0${keyHeight}`;
+                document.getElementById("width-label").innerText = `\u00A0\u00A0\u00A0${keyWidth}`;
+
+                // 更新拖动条的值
+                document.getElementById("key-width").value = keyWidth;
+                document.getElementById("key-height").value = keyHeight;
+                document.getElementById("merged-slider").value = keyWidth;
+
+                // 调用更新光标的函数
+                updateCrosshairSize();
+            }
+            if (roundedValue === "14x6") {
+                keyWidth = 140;
+                keyHeight = 60;
                 // 更新显示标签
                 document.getElementById("height-label").innerText = `\u00A0\u00A0\u00A0${keyHeight}`;
                 document.getElementById("width-label").innerText = `\u00A0\u00A0\u00A0${keyWidth}`;
