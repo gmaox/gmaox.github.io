@@ -63,6 +63,34 @@
         imgElement.style.height = "auto";
         document.getElementById("image-container").appendChild(imgElement);
     </script> 
+			    <!-- 主界面 -->
+        <u onclick="toggleModal()" style="font-size: 24px; color: #333;">关于今日运势</u>
+    <!-- 悬浮窗 -->
+    <div id="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 600px; background-color: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+            <p style="font-size: 16px; color: #555; margin-bottom: 20px; text-align: left;">
+                这原本是雪见软糖酱（LxBot）的签到附属功能，会在群聊签到时随着经验值等其他信息一同发送给使用者。<br>
+                我觉得软糖可爱便放在了这里，每天的图片都会不一样。
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 10px;">
+                <img src="1" alt="图1" style="width: 100%; border-radius: 5px;">
+                <img src="2" alt="图2" style="width: 100%; border-radius: 5px;">
+                <img src="3" alt="图3" style="width: 100%; border-radius: 5px;">
+                <img src="4" alt="图4" style="width: 100%; border-radius: 5px;">
+            </div>
+            <button onclick="toggleModal()" 
+                style="margin-top: 20px; padding: 10px 20px; font-size: 16px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                关闭
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function toggleModal() {
+            const modal = document.getElementById('modal');
+            modal.style.display = modal.style.display === 'none' || modal.style.display === '' ? 'block' : 'none';
+        }
+    </script>
 			<br> <small><small><small> 掐指一算，下次<i style="color:#FFA15D;" >咕咕咕</i>的概率为<script language="javascript">
 							var number = Math.random();
 							number = Math.ceil(number * 100);
