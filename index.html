@@ -29,7 +29,40 @@
 		<div>
 			 这里准备放点<a href="box"style="color:#000000;">东西</a> 
 			<br> 
-			<img src="60cc01e613c93496.png"> 
+			   <div id="image-container">
+        <!-- 图片将显示在这里 -->
+    </div>
+    <script>
+        // 定义图片数组
+        const images = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"];
+        
+        // 获取当天的日期（例如，20241120）
+        const today = new Date();
+        const dayKey = today.getFullYear() + "" + (today.getMonth() + 1) + "" + today.getDate();
+
+        // 使用日期生成随机数种子
+        function seededRandom(seed) {
+            let x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+        }
+
+        // 计算种子（将日期字符串转为数值）
+        const seed = parseInt(dayKey, 10);
+        
+        // 基于种子生成随机索引
+        const randomIndex = Math.floor(seededRandom(seed) * images.length);
+        
+        // 获取随机图片
+        const selectedImage = images[randomIndex];
+        
+        // 在页面显示图片
+        const imgElement = document.createElement("img");
+        imgElement.src = selectedImage;
+        imgElement.alt = "随机图片";
+        imgElement.style.maxWidth = "100%";
+        imgElement.style.height = "auto";
+        document.getElementById("image-container").appendChild(imgElement);
+    </script> 
 			<br> <small><small><small> 掐指一算，下次<i style="color:#FFA15D;" >咕咕咕</i>的概率为<script language="javascript">
 							var number = Math.random();
 							number = Math.ceil(number * 100);
