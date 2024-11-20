@@ -429,12 +429,12 @@
         function addButton() {
             const type = document.getElementById("key-type").innerText || "按键";
             if (buttons.some(button => button.type === type) && Loadtype.trim() == "") {
-            document.getElementById("cf666").style.display = "block";
-            setTimeout(function() {
-                document.getElementById("cf666").style.display = "none";
-            }, 2000);
+                document.getElementById("cf666").style.display = "block";
+                setTimeout(function() {
+                    document.getElementById("cf666").style.display = "none";
+                }, 2000);
                 return; // 如果匹配，直接返回
-            } 
+            }
             // 创建按键元素
             const button = document.createElement("div");
             button.className = "button";
@@ -502,12 +502,12 @@
 
             if (index > -1) {
                 const buttonConfig8 = {
-                type: buttons[index].type,
-                x: parseInt(clickedButton.style.left),
-                y: parseInt(clickedButton.style.top),
-                width: parseInt(clickedButton.style.width),
-                height: parseInt(clickedButton.style.height)
-            };
+                    type: buttons[index].type,
+                    x: parseInt(clickedButton.style.left),
+                    y: parseInt(clickedButton.style.top),
+                    width: parseInt(clickedButton.style.width),
+                    height: parseInt(clickedButton.style.height)
+                };
                 buttons[index] = buttonConfig8;
             };
         }
@@ -1054,6 +1054,26 @@
                             reader.onload = function(e) {
                                 try {
                                     keydata = JSON.parse(e.target.result);
+                                    // 遍历 keydata 并处理 name 和 desc 不一致的情况
+                                    for (const category in keydata.data) {
+                                        const elements = keydata.data[category];
+
+                                        elements.forEach(item => {
+                                            // 检查 name 和 desc 是否一致
+                                            if (item.name !== item.desc) {
+                                                // 在 className 为 "button" 的按钮中寻找 innerText 为 item.desc 的按钮
+                                                const buttons = document.querySelectorAll('.button');
+
+                                                buttons.forEach(button => {
+                                                    if (button.innerText === item.desc) {
+                                                        // 将按钮的 innerText 替换为 item.name
+                                                        button.innerText = item.name;
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    };
+                                    document.getElementById("fullscreen-btn").style.display = "block";
                                     console.log("文件内容：", keydata);
                                 } catch (error) {
                                     alert("文件内容不是有效的 JSON 格式，请检查文件内容！");
@@ -1379,5 +1399,4 @@
         }
     </script>
 </body>
-
 </html>
