@@ -1107,6 +1107,21 @@
 
         // 实现按键拖动
         function startDrag(e, button) {
+            
+            keyWidth = parseInt(e.target.style.width)
+            keyHeight = parseInt(e.target.style.height)
+            console.log(keyHeight,keyWidth)
+                            // 更新显示标签
+            document.getElementById("height-label").innerText = `\u00A0\u00A0\u00A0${keyHeight}`;
+            document.getElementById("width-label").innerText = `\u00A0\u00A0\u00A0${keyWidth}`;
+                        // 根据 roundedValue 调整拖动条的值
+            document.getElementById("key-width").value = keyWidth;
+            document.getElementById("key-height").value = keyHeight;
+            document.getElementById("merged-slider").value = keyWidth;
+
+            // 更新光标大小或其他相关操作
+            updateCrosshairSize();
+            
             e.preventDefault(); // 防止触摸事件导致滚动
             deleteButton(e, button);
             if (modifyKeyMode) {
