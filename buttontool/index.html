@@ -527,6 +527,7 @@
                 return;
             };
             if (index > -1) {
+                document.getElementById("key-type").innerText=buttons[index].type;
                 buttons.splice(index, 1);
                 button.remove();
             };
