@@ -229,7 +229,7 @@
             x: 0,
             y: 0
         }; // 记录最后一次点击的位置
-        const keys = ["Esc", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "Del", "触控左", "Home", "End", "PgUp", "PgDn", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "触控", "Ctrl", "Win", "Alt", "Space", "Shift", "Tab", "Enter", "A", "B", "C", "D", "E", "F", "G", "触控右", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "摇杆", "V", "W", "X", "Y", "Z", "Insert", "↑", "↓", "←", "→", "ML", "MR", "MR+", "MM", "十字键"];
+        const keys = ["Esc", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "Del", "触控左","A", "Home", "End", "PgUp", "PgDn", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "触控","触控中", "Ctrl", "Win", "Alt", "Space", "Shift", "Tab", "Enter", "A", "B", "C", "D", "E", "F", "G", "触控右","A", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "摇杆","A", "V", "W", "X", "Y", "Z", "Insert", "↑", "↓", "←", "→", "ML", "MR", "MR+", "MM", "十字键","A"];
         let keyWidth = 50; // 初始化宽度 
         let keyHeight = 50; // 初始化高度
         let deleteMode = false; // 删除模式标志
@@ -250,9 +250,9 @@
             const keySelector = document.getElementById("keys");
             keySelector.innerHTML = '';
 
-            // 使用 CSS Grid 布局并设置每行15个按键
+            // 使用 CSS Grid 布局并设置每行16个按键
             keySelector.style.display = "grid";
-            keySelector.style.gridTemplateColumns = "repeat(15, 1fr)"; // 每行15个键
+            keySelector.style.gridTemplateColumns = "repeat(16, 1fr)"; // 每行15个键
             keySelector.style.gridGap = "0px"; // 按键之间的间距，可以根据需要调整
 
             keys.forEach(key => {
@@ -1211,6 +1211,8 @@
             "触控左": "m_11",
             "触控": "m_10",
             "触控右": "m_9",
+            "触控中": "m_12",
+
 
             "Esc": "key_111",
             "F1": "key_131",
@@ -1290,6 +1292,15 @@
                 let key = typeMap[item.type];
                 if (key) {
                     convertedData[key] = JSON.stringify({
+                        LEFT: item.x * window.devicePixelRatio,
+                        TOP: item.y * window.devicePixelRatio,
+                        WIDTH: item.width * window.devicePixelRatio,
+                        HEIGHT: item.height * window.devicePixelRatio,
+                        ENABLED: true
+                    });
+                } else {
+                    // 如果找不到键，将 item.type 作为键
+                    convertedData[item.type] = JSON.stringify({
                         LEFT: item.x * window.devicePixelRatio,
                         TOP: item.y * window.devicePixelRatio,
                         WIDTH: item.width * window.devicePixelRatio,
