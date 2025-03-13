@@ -1,13 +1,15 @@
-<body onload="time()";style="background-color:#FFFFFF;">
-    <a href="say.html" style="float:left;"><img src="say.png" height="35px"></a><h5>系统时间：</h5>
+<body onload="time()" style="background-color:#FFFFFF; text-align: center;">
+    <a href="say.html" style="float:left;"><img src="say.png" height="35px"></a>
+    <a href="javascript:void(0);" onclick="alert('博客施工中。。。');" style="display: block; margin-top: 10px;">帽のblog入口</a>
+    <!-- <h5>系统时间：</h5> -->
     <h2 id="info"></h2>
     <script>
        function time() {
-  t_div = document.getElementById('showtime');
-  var now = new Date()
-  t_div.innerHTML = (now.getMonth() + 1) + "/" + now.getDate() + "   "+ now.getHours() + ":" + now.getMinutes() + "   " + now.getSeconds() + "s";
-  setTimeout(time, 1000);
-}
+           t_div = document.getElementById('showtime');
+           var now = new Date();
+           t_div.innerHTML = (now.getMonth() + 1) + "/" + now.getDate() + "   "+ now.getHours() + ":" + now.getMinutes() + "   " + now.getSeconds() + "s";
+           setTimeout(time, 1000);
+       }
     </script>
-    <h2 id="showtime"></h2>
+    <!-- <h2 id="showtime"></h2> -->
 </body>
