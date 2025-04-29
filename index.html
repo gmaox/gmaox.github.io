@@ -5,7 +5,134 @@
 		<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1"> 
 		<link rel="shortcut icon" href="favicon.png" type="image/x-icon"> 
 		<title>maoziの窝</title> 
+		<style>
+			/* 确保 body 占满整个视口 */
+			body {
+				margin: 0;
+				padding: 0;
+				min-height: 100vh;
+				transition: background-image 0.3s ease;
+			}
+		</style>
 	</head>
+	<body>
+		<script>
+			// 避免生成灰色或相近颜色的函数
+			function avoidGray(r, g, b) {
+				// 定义一个阈值，用于判断颜色通道值是否相近
+				const threshold = 2; 
+				const isSimilar = Math.abs(r - g) <= threshold && Math.abs(g - b) <= threshold && Math.abs(r - b) <= threshold;
+				if (isSimilar) {
+					const randomChannel = Math.floor(Math.random() * 3);
+					const adjustment = Math.floor(Math.random() * 30) + 10; // 随机调整幅度 10 - 39
+					if (randomChannel === 0) {
+						r = Math.min(255, Math.max(150, r + (Math.random() > 0.5 ? adjustment : -adjustment)));
+					} else if (randomChannel === 1) {
+						g = Math.min(255, Math.max(150, g + (Math.random() > 0.5 ? adjustment : -adjustment)));
+					} else {
+						b = Math.min(255, Math.max(150, b + (Math.random() > 0.5 ? adjustment : -adjustment)));
+					}
+				}
+				return [r, g, b];
+			}
+
+			// 在页面加载时就确定随机调整值
+			function generateAdjustments() {
+				const randomChannel1 = Math.floor(Math.random() * 3);
+				const adjustment1 = Math.floor(Math.random() * 30) + 10;
+				const randomChannel2 = Math.floor(Math.random() * 3);
+				const adjustment2 = Math.floor(Math.random() * 30) + 10;
+				return { randomChannel1, adjustment1, randomChannel2, adjustment2 };
+			}
+
+			const { randomChannel1, adjustment1, randomChannel2, adjustment2 } = generateAdjustments();
+
+			// 修改后的颜色调整函数
+			function adjustColor(r, g, b, channel, adjustment) {
+			    // 确保调整后的颜色值在150-255范围内
+			    const newValue = Math.min(255, Math.max(150, 
+			        channel === 0 ? r + adjustment : 
+			        channel === 1 ? g + adjustment : 
+			        b + adjustment
+			    ));
+			    
+			    // 返回调整后的RGB值
+			    return [
+			        channel === 0 ? newValue : r,
+			        channel === 1 ? newValue : g,
+			        channel === 2 ? newValue : b
+			    ];
+			}
+
+			// 页面加载完成后设置初始渐变背景
+			window.onload = function() {
+				const windowWidth = window.innerWidth;
+				const windowHeight = window.innerHeight;
+				// 取窗口中心位置作为初始鼠标位置
+				const x = 0;
+				const y = windowHeight / 2;
+
+				// 生成淡色的 RGB 值（范围 150 - 255）
+				let r1 = Math.floor(150 + (x / windowWidth) * 105);
+				let g1 = Math.floor(150 + (y / windowHeight) * 105);
+				let b1 = Math.floor(150 + ((x + y) / (windowWidth + windowHeight)) * 105);
+
+				let r2 = Math.floor(150 + ((windowWidth - x) / windowWidth) * 105);
+				let g2 = Math.floor(150 + ((windowHeight - y) / windowHeight) * 105);
+				let b2 = Math.floor(150 + ((windowWidth + windowHeight - x - y) / (windowWidth + windowHeight)) * 105);
+
+				// 使用预先确定的调整值
+				if (Math.abs(r1 - g1) <= 30 && Math.abs(g1 - b1) <= 30 && Math.abs(r1 - b1) <= 30) {
+					[r1, g1, b1] = adjustColor(r1, g1, b1, randomChannel1, adjustment1);
+				}
+
+				if (Math.abs(r2 - g2) <= 30 && Math.abs(g2 - b2) <= 30 && Math.abs(r2 - b2) <= 30) {
+					[r2, g2, b2] = adjustColor(r2, g2, b2, randomChannel2, adjustment2);
+				}
+
+				// 创建渐变背景
+				document.body.style.backgroundImage = `linear-gradient(to bottom right, rgb(${r1}, ${g1}, ${b1}), rgb(${r2}, ${g2}, ${b2}))`;
+			};
+
+			// 提取渐变逻辑为单独函数
+			function updateGradient(x, y) {
+				const windowWidth = window.innerWidth;
+				const windowHeight = window.innerHeight;
+
+				// 生成淡色的 RGB 值（范围 150 - 255）
+				let r1 = Math.floor(150 + (x / windowWidth) * 105);
+				let g1 = Math.floor(150 + (y / windowHeight) * 105);
+				let b1 = Math.floor(150 + ((x + y) / (windowWidth + windowHeight)) * 105);
+
+				let r2 = Math.floor(150 + ((windowWidth - x) / windowWidth) * 105);
+				let g2 = Math.floor(150 + ((windowHeight - y) / windowHeight) * 105);
+				let b2 = Math.floor(150 + ((windowWidth + windowHeight - x - y) / (windowWidth + windowHeight)) * 105);
+
+				// 使用预先确定的调整值
+				if (Math.abs(r1 - g1) <= 30 && Math.abs(g1 - b1) <= 30 && Math.abs(r1 - b1) <= 30) {
+					[r1, g1, b1] = adjustColor(r1, g1, b1, randomChannel1, adjustment1);
+				}
+
+				if (Math.abs(r2 - g2) <= 30 && Math.abs(g2 - b2) <= 30 && Math.abs(r2 - b2) <= 30) {
+					[r2, g2, b2] = adjustColor(r2, g2, b2, randomChannel2, adjustment2);
+				}
+
+				// 创建渐变背景
+				document.body.style.backgroundImage = `linear-gradient(to bottom right, rgb(${r1}, ${g1}, ${b1}), rgb(${r2}, ${g2}, ${b2}))`;
+			}
+
+			// 鼠标移动事件
+			document.addEventListener('mousemove', function(event) {
+				updateGradient(event.clientX, event.clientY);
+			});
+
+			// 触摸移动事件
+			document.addEventListener('touchmove', function(event) {
+				event.preventDefault(); // 防止触摸时的默认行为
+				const touch = event.touches[0];
+				updateGradient(touch.clientX, touch.clientY);
+			}, { passive: false });
+		</script>
 <!-- <body style="background-image:url('/nene.png');">  -->
    <script type="text/javascript">
  
@@ -20,7 +147,7 @@
 </script>
 <input type="submit" value="隐藏👀" onclick="display('l')" style="float:right;">
 <input type="submit" value="拖动✋" onclick="display('a')" style="float:left;">
-<div id="l"align="center" style="margin:auto;background-color:#FFFFFFF0;width:370px;">
+<div id="l"align="center" style="margin:auto;background-color:#ffffff8f;width:370px;">
 		<h1>Gmaozi pages！</h1> 
 		<div>
 			 <small><small>一言可以点哦~</small></small>( ˘▽˘)っ♨ <br><iframe src="box/a" name="myframe" width="300" height="100" scrolling="NO" frameborder="1" id="myframe" border="0" ></iframe>
@@ -64,7 +191,7 @@
         document.getElementById("image-container").appendChild(imgElement);
     </script> 
 			    <!-- 主界面 -->
-        <u onclick="toggleModal()" style="font-size: 12px; color: #333;">运势的背后：那些未说的事</u>
+        <u onclick="toggleModal()" style="font-size: 12px; color: #333;">运势Backgrounds behind：那些未说的事</u>
     <!-- 悬浮窗 -->
     <div id="modal" style="display: none; position: fixed; top: 5%; left: 5%; width: 90%; height: 90%; background-color: rgba(0, 0, 0, 0.5);overflow-y: auto;">
         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 600px; background-color: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
@@ -213,83 +340,3 @@
 <h1 id="a" style="font-size:999px;color:#FFFFFF00;display:none;">__________________</h1>
 	</body>
 </html>
-<body>
-    <div style="opacity: 0.6;position:absolute;top:0;left:0;width:100%;height:100%;border:none;z-index:-1;">
-        <marquee behavior="scroll" direction="left" scrollamount="30"><font color="red" size="15px">Ciallo～(∠・ω< )⌒★</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="15"><font color="aqua" size="11px">Ciallo～(∠・ω< )⌒☆</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="25"><font>Ciallo～(∠・ω< )⌒★</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="12"><font color="coral" size="10px">Ciallo～(∠・ω< )⌒★</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="28"><font color="red">Ciallo～(∠・ω< )⌒★</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="20"><font color="greenyellow" size="13px">Ciallo～(∠・ω< )⌒☆</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="10"><font size="16px">Ciallo～(∠・ω< )⌒★</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="15"><font color="pink" size="20px">Ciallo～(∠・ω< )⌒★</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="11"><font color="aqua" size="6px">Ciallo～(∠・ω< )⌒☆</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="28"><font color="red">Ciallo～(∠・ω< )⌒☆</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="8"><font color="greenyellow" size="10px">Ciallo～(∠・ω< )⌒★</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="20"><font color="pink" size="9px">Ciallo～(∠・ω< )⌒★</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="13"><font color="green" size="5px">Ciallo～(∠・ω< )⌒☆</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="17"><font color="blue" size="5px">Ciallo～(∠・ω< )⌒☆</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="16"><font color="yellow" size="7px">Ciallo～(∠・ω< )⌒★</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="11"><font color="red" size="5px">Ciallo～(∠・ω< )⌒★</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="10"><font color="orange" size="8px">Ciallo～(∠・ω< )⌒☆</font></marquee>
-        <marquee behavior="scroll" direction="left" scrollamount="20"><font color="gray" size="9px">Ciallo～(∠・ω< )⌒★</font></marquee>
-    </div>
-</body>
-</html>
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script type="text/javascript">
-    let a_idx = 0;
-
-    let ac = new AudioContext();
-
-    $(function (){
-        $("body").click(function(e) {
-            const a = new Array("Ciallo～(∠・ω< )⌒★", "Ciallo～(∠・ω< )⌒☆");
-            const $i = $("<span/>").text(a[a_idx]);
-            a_idx = (a_idx + 1) % a.length;
-            const x = e.pageX,
-                y = e.pageY;
-            $i.css({
-                "z-index": 999999999999999999999999999999999999999999999999999999999999999999999,
-                "top": y - 20,
-                "left": x,
-                "position": "absolute",
-                "font-weight": "bold",
-                "color": color16()
-            });
-            $("body").append($i);
-            $i.animate({
-                    "top": y - 180,
-                    "opacity": 0
-                },
-                1500,
-                function() {
-                    $i.remove();
-                });
-        });
-    })
-
-    function color16(){
-        const r = Math.floor(Math.random()*256);
-        const g = Math.floor(Math.random()*256);
-        const b = Math.floor(Math.random()*256);
-        return `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
-    }
-
-    function load_sound(url_data) {
-        const req = new XMLHttpRequest();
-        req.open('GET', url_data, true);
-        req.responseType = 'arraybuffer';
-        req.onload = function() {
-            ac.decodeAudioData(req.response, function(buffer){
-                const source = ac.createBufferSource();
-                source.buffer = buffer;
-                source.connect(ac.destination);
-                source.start(0);
-            },function (e) {
-                console.info('错误');
-            });
-        }
-        req.send();
-    }
-</script>
