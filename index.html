@@ -134,19 +134,27 @@
 			}, { passive: false });
 		</script>
 <!-- <body style="background-image:url('/nene.png');">  -->
-   <script type="text/javascript">
- 
-    function display(id){
-        var traget=document.getElementById(id);
-        if(traget.style.display=="none"){
-            traget.style.display="";
-        }else{
-            traget.style.display="none";
-      }
-   }
+<script type="text/javascript">
+    // 切换显示/隐藏
+    function display(id) {
+        var target = document.getElementById(id);
+        target.style.display = target.style.display === "none" ? "" : "none";
+    }
+    
+    // 新增：切换z-index功能
+    function toggleDrag() {
+    var container = document.getElementById('model-container'); // 改为操作model-container
+    var currentZIndex = parseInt(container.style.zIndex || window.getComputedStyle(container).zIndex);
+    
+    // 在1和-1之间切换
+    var newZIndex = currentZIndex === 1 ? -1 : 1;
+    container.style.zIndex = newZIndex;
+    
+}
 </script>
-<input type="submit" value="隐藏👀" onclick="display('l')" style="float:right;">
-<input type="submit" value="拖动✋" onclick="display('a')" style="float:left;">
+
+<input type="button" value="隐藏👀" onclick="display('l')" style="position: relative;z-index:2;float:right;">
+<input type="button" value="召唤🍊" onclick="toggleDrag()" style="position: relative;z-index:2;float:left;">
 <div id="l"align="center" style="margin:auto;background-color:#ffffff8f;width:370px;">
 		<h1>Gmaozi pages！</h1> 
 		<div>
@@ -348,7 +356,7 @@
         scene.background = null; // 透明背景
         
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 0, 5);
+        camera.position.set(5, 5, 5);
         
         const renderer = new THREE.WebGLRenderer({ 
             antialias: true,
@@ -453,6 +461,5 @@ document.head.appendChild(style);
         animate();
         
     </script>
-<h1 id="a" style="font-size:999px;color:#FFFFFF00;display:none;">__________________</h1>
 	</body>
 </html>
