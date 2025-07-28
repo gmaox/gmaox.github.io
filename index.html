@@ -35,6 +35,8 @@
 
 <body>
     <script>
+    // 控制渐变背景是否启用的开关
+let gradientEnabled = true;
         // 避免生成灰色或相近颜色的函数
         function avoidGray(r, g, b) {
             // 定义一个阈值，用于判断颜色通道值是否相近
@@ -94,6 +96,7 @@
 
         // 页面加载完成后设置初始渐变背景
         window.onload = function() {
+            if (!gradientEnabled) return;
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
             // 取窗口中心位置作为初始鼠标位置
@@ -249,9 +252,119 @@
                 imgElement.style.maxWidth = "100%";
                 imgElement.style.height = "auto";
                 document.getElementById("image-container").appendChild(imgElement);
+      // 切换背景图（添加暂停渐变逻辑）
+function changeBackground() {
+    console.log("开始抽取背景图...");
+    
+    // 获取或创建加载提示元素
+    let loadingTip = document.getElementById('loading-tip');
+    if (!loadingTip) {
+        loadingTip = document.createElement('div');
+        loadingTip.id = 'loading-tip';
+        loadingTip.style.position = 'fixed';
+        loadingTip.style.top = '50%';
+        loadingTip.style.left = '50%';
+        loadingTip.style.transform = 'translate(-50%, -50%)';
+        loadingTip.style.padding = '10px 20px';
+        loadingTip.style.background = 'rgba(0, 0, 0, 0.7)';
+        loadingTip.style.color = 'white';
+        loadingTip.style.borderRadius = '5px';
+        loadingTip.style.zIndex = '100';
+        document.body.appendChild(loadingTip);
+    }
+    // 显示背景加载提示
+    loadingTip.textContent = '背景加载中...';
+    loadingTip.style.display = 'block';
+
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const imgUrl = `https://picsum.photos/seed/${Math.random()}/${screenWidth}/${screenHeight}`;
+    currentBackgroundUrl = imgUrl;
+
+    const img = new Image();
+    img.src = imgUrl;
+
+    // 图片加载成功后逻辑
+    img.onload = function() {
+        console.log("背景图加载成功：", imgUrl);
+        // 隐藏加载提示
+        loadingTip.style.display = 'none';
+        
+        // 创建底层图片容器并显示图片
+        let bgContainer = document.getElementById('backgroundContainer');
+        if (!bgContainer) {
+            bgContainer = document.createElement('div');
+            bgContainer.id = 'backgroundContainer';
+            bgContainer.style.position = 'fixed';
+            bgContainer.style.top = '0';
+            bgContainer.style.left = '0';
+            bgContainer.style.width = '100%';
+            bgContainer.style.height = '100%';
+            bgContainer.style.zIndex = '-9999';
+            bgContainer.style.overflow = 'hidden';
+            document.body.appendChild(bgContainer);
+        }
+        bgContainer.innerHTML = '';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        img.style.objectPosition = 'center';
+        bgContainer.appendChild(img);
+
+        // 关闭渐变更新
+        gradientEnabled = false;
+        // 显示查看按钮
+        document.getElementById('viewBackground').style.display = 'inline';
+    };
+
+// 加载失败后：显示失败提示，延迟隐藏，恢复渐变背景
+img.onerror = function() {
+    console.error('背景图加载失败，恢复渐变背景');
+    
+    // 1. 更新提示文字为失败信息
+    loadingTip.textContent = '背景图加载失败';
+    loadingTip.style.display = 'block'; // 确保提示可见
+    
+    // 2. 延迟2000ms隐藏提示
+    setTimeout(() => {
+        loadingTip.style.display = 'none';
+    }, 2000);
+
+    // 3. 重置状态并恢复渐变背景
+    currentBackgroundUrl = ''; // 清空背景图地址
+    document.getElementById('viewBackground').style.display = 'none'; // 隐藏查看按钮
+    
+    // 移除底层图片容器（若存在）
+    const bgContainer = document.getElementById('backgroundContainer');
+    if (bgContainer) {
+        bgContainer.remove();
+    }
+    
+    // 重新启用渐变背景并更新
+    gradientEnabled = true;
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    updateGradient(centerX, centerY);
+};
+}
+
+
+
+
+// 新窗口打开当前背景图
+function openBackgroundInNewWindow() {
+    if (currentBackgroundUrl) {
+        window.open(currentBackgroundUrl, '_blank');
+    }
+}
             </script>
             <!-- 主界面 -->
             <u onclick="toggleModal()" style="font-size: 12px; color: #333;">关于软糖运势</u>
+   <!-- 抽背景触发标签 -->
+<u onclick="changeBackground()" style="font-size: 12px; color: #333;">抽一张背景图</u>
+
+<!-- 查看背景图标签（默认隐藏） -->
+<u id="viewBackground" onclick="openBackgroundInNewWindow()" style="font-size: 12px; color: #333;display: none;">查看背景</u>
             <!-- 悬浮窗 -->
             <div id="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); overflow-y: auto; z-index: 1000; -webkit-overflow-scrolling: touch;">
                 <div style="min-height: 100vh; display: flex; justify-content: center; padding: 20px; box-sizing: border-box;">
