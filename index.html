@@ -1,238 +1,291 @@
 <!doctype html>
-<html> 
-	<head> 
-		<meta charset="UTF-8"> 
-		<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1"> 
-		<link rel="shortcut icon" href="favicon.png" type="image/x-icon"> 
-		<title>maoziの窝</title> 
-		<style>
-			/* 确保 body 占满整个视口 */
-			body {
-				margin: 0;
-				padding: 0;
-				min-height: 100vh;
-				transition: background-image 0.3s ease;
-			}
-		</style>
-	</head>
-	<body>
-		<script>
-			// 避免生成灰色或相近颜色的函数
-			function avoidGray(r, g, b) {
-				// 定义一个阈值，用于判断颜色通道值是否相近
-				const threshold = 2; 
-				const isSimilar = Math.abs(r - g) <= threshold && Math.abs(g - b) <= threshold && Math.abs(r - b) <= threshold;
-				if (isSimilar) {
-					const randomChannel = Math.floor(Math.random() * 3);
-					const adjustment = Math.floor(Math.random() * 30) + 10; // 随机调整幅度 10 - 39
-					if (randomChannel === 0) {
-						r = Math.min(255, Math.max(150, r + (Math.random() > 0.5 ? adjustment : -adjustment)));
-					} else if (randomChannel === 1) {
-						g = Math.min(255, Math.max(150, g + (Math.random() > 0.5 ? adjustment : -adjustment)));
-					} else {
-						b = Math.min(255, Math.max(150, b + (Math.random() > 0.5 ? adjustment : -adjustment)));
-					}
-				}
-				return [r, g, b];
-			}
+<html>
 
-			// 在页面加载时就确定随机调整值
-			function generateAdjustments() {
-				const randomChannel1 = Math.floor(Math.random() * 3);
-				const adjustment1 = Math.floor(Math.random() * 30) + 10;
-				const randomChannel2 = Math.floor(Math.random() * 3);
-				const adjustment2 = Math.floor(Math.random() * 30) + 10;
-				return { randomChannel1, adjustment1, randomChannel2, adjustment2 };
-			}
-
-			const { randomChannel1, adjustment1, randomChannel2, adjustment2 } = generateAdjustments();
-
-			// 修改后的颜色调整函数
-			function adjustColor(r, g, b, channel, adjustment) {
-			    // 确保调整后的颜色值在150-255范围内
-			    const newValue = Math.min(255, Math.max(150, 
-			        channel === 0 ? r + adjustment : 
-			        channel === 1 ? g + adjustment : 
-			        b + adjustment
-			    ));
-			    
-			    // 返回调整后的RGB值
-			    return [
-			        channel === 0 ? newValue : r,
-			        channel === 1 ? newValue : g,
-			        channel === 2 ? newValue : b
-			    ];
-			}
-
-			// 页面加载完成后设置初始渐变背景
-			window.onload = function() {
-				const windowWidth = window.innerWidth;
-				const windowHeight = window.innerHeight;
-				// 取窗口中心位置作为初始鼠标位置
-				const x = 0;
-				const y = windowHeight / 2;
-
-				// 生成淡色的 RGB 值（范围 150 - 255）
-				let r1 = Math.floor(150 + (x / windowWidth) * 105);
-				let g1 = Math.floor(150 + (y / windowHeight) * 105);
-				let b1 = Math.floor(150 + ((x + y) / (windowWidth + windowHeight)) * 105);
-
-				let r2 = Math.floor(150 + ((windowWidth - x) / windowWidth) * 105);
-				let g2 = Math.floor(150 + ((windowHeight - y) / windowHeight) * 105);
-				let b2 = Math.floor(150 + ((windowWidth + windowHeight - x - y) / (windowWidth + windowHeight)) * 105);
-
-				// 使用预先确定的调整值
-				if (Math.abs(r1 - g1) <= 30 && Math.abs(g1 - b1) <= 30 && Math.abs(r1 - b1) <= 30) {
-					[r1, g1, b1] = adjustColor(r1, g1, b1, randomChannel1, adjustment1);
-				}
-
-				if (Math.abs(r2 - g2) <= 30 && Math.abs(g2 - b2) <= 30 && Math.abs(r2 - b2) <= 30) {
-					[r2, g2, b2] = adjustColor(r2, g2, b2, randomChannel2, adjustment2);
-				}
-
-				// 创建渐变背景
-				document.body.style.backgroundImage = `linear-gradient(to bottom right, rgb(${r1}, ${g1}, ${b1}), rgb(${r2}, ${g2}, ${b2}))`;
-			};
-
-			// 提取渐变逻辑为单独函数
-			function updateGradient(x, y) {
-				const windowWidth = window.innerWidth;
-				const windowHeight = window.innerHeight;
-
-				// 生成淡色的 RGB 值（范围 150 - 255）
-				let r1 = Math.floor(150 + (x / windowWidth) * 105);
-				let g1 = Math.floor(150 + (y / windowHeight) * 105);
-				let b1 = Math.floor(150 + ((x + y) / (windowWidth + windowHeight)) * 105);
-
-				let r2 = Math.floor(150 + ((windowWidth - x) / windowWidth) * 105);
-				let g2 = Math.floor(150 + ((windowHeight - y) / windowHeight) * 105);
-				let b2 = Math.floor(150 + ((windowWidth + windowHeight - x - y) / (windowWidth + windowHeight)) * 105);
-
-				// 使用预先确定的调整值
-				if (Math.abs(r1 - g1) <= 30 && Math.abs(g1 - b1) <= 30 && Math.abs(r1 - b1) <= 30) {
-					[r1, g1, b1] = adjustColor(r1, g1, b1, randomChannel1, adjustment1);
-				}
-
-				if (Math.abs(r2 - g2) <= 30 && Math.abs(g2 - b2) <= 30 && Math.abs(r2 - b2) <= 30) {
-					[r2, g2, b2] = adjustColor(r2, g2, b2, randomChannel2, adjustment2);
-				}
-
-				// 创建渐变背景
-				document.body.style.backgroundImage = `linear-gradient(to bottom right, rgb(${r1}, ${g1}, ${b1}), rgb(${r2}, ${g2}, ${b2}))`;
-			}
-
-			// 鼠标移动事件
-			document.addEventListener('mousemove', function(event) {
-				updateGradient(event.clientX, event.clientY);
-			});
-
-			// 触摸移动事件
-			document.addEventListener('touchmove', function(event) {
-				event.preventDefault(); // 防止触摸时的默认行为
-				const touch = event.touches[0];
-				updateGradient(touch.clientX, touch.clientY);
-			}, { passive: false });
-		</script>
-<!-- <body style="background-image:url('/nene.png');">  -->
-<script type="text/javascript">
-    // 切换显示/隐藏
-    function display(id) {
-        var target = document.getElementById(id);
-        target.style.display = target.style.display === "none" ? "" : "none";
-    }
-    
-    // 新增：切换z-index功能
-    function toggleDrag() {
-    var container = document.getElementById('model-container'); // 改为操作model-container
-    var currentZIndex = parseInt(container.style.zIndex || window.getComputedStyle(container).zIndex);
-    
-    // 在1和-1之间切换
-    var newZIndex = currentZIndex === 1 ? -1 : 1;
-    container.style.zIndex = newZIndex;
-    
-}
-</script>
-
-<input type="button" value="隐藏👀" onclick="display('l')" style="position: relative;z-index:2;float:right;">
-<input type="button" value="召唤🍊" onclick="toggleDrag()" style="position: relative;z-index:2;float:left;">
-<div id="l"align="center" style="margin:auto;background-color:#ffffff8f;width:370px;">
-		<h1>Gmaozi pages！</h1> 
-		<div>
-			 <small><small>一言可以点哦~</small></small>( ˘▽˘)っ♨ <br><iframe src="box/a" name="myframe" width="300" height="100" scrolling="NO" frameborder="1" id="myframe" border="0" ></iframe>
-		</div> 
-		<hr> 
-		<div>
-			 这里准备放点<a href="box"style="color:#000000;">东西</a> 
-			<br> 
-			   <div id="image-container">
-        <!-- 图片将显示在这里 -->
-    </div>
-    <script>
-        // 定义图片数组
-        const images = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"];
-        
-        // 获取当天的日期（例如，20241120）
-        const today = new Date();
-        const dayKey = today.getFullYear() + "" + (today.getMonth() + 1) + "" + today.getDate();
-
-        // 使用日期生成随机数种子
-        function seededRandom(seed) {
-            let x = Math.sin(seed) * 10000;
-            return x - Math.floor(x);
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <title>maoziの窝</title>
+    <style>
+        /* 确保 body 占满整个视口 */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            transition: background-image 0.3s ease;
         }
 
-        // 计算种子（将日期字符串转为数值）
-        const seed = parseInt(dayKey, 10);
-        
-        // 基于种子生成随机索引
-        const randomIndex = Math.floor(seededRandom(seed) * images.length);
-        
-        // 获取随机图片
-        const selectedImage = images[randomIndex];
-        
-        // 在页面显示图片
-        const imgElement = document.createElement("img");
-        imgElement.src = selectedImage;
-        imgElement.alt = "随机图片";
-        imgElement.style.maxWidth = "100%";
-        imgElement.style.height = "auto";
-        document.getElementById("image-container").appendChild(imgElement);
-    </script> 
-			    <!-- 主界面 -->
-        <u onclick="toggleModal()" style="font-size: 12px; color: #333;">关于软糖运势</u>
-    <!-- 悬浮窗 -->
-    <div id="modal" style="display: none; position: fixed; top: 5%; left: 5%; width: 90%; height: 90%; background-color: rgba(0, 0, 0, 0.5);overflow-y: auto;">
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 600px; background-color: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-            <p style="font-size: 16px; color: #555; margin-bottom: 20px; text-align: left;"><br><br><br><br><br><br><br>
-                这原本是雪见软糖酱（LxBot）的签到附属功能，会在群聊签到时随着经验值等其他信息一同发送给使用者。<br>
-                我觉得软糖可爱便放在了这里，每天的图片都会不一样,4种状态都是等概率的，所以抽到凶就是四分之一的注定了。
-            </p>
-            <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 10px;">
-                <img src="1.jpg" alt="吉" style="width: 100%; border-radius: 5px;">
-                <img src="2.jpg" alt="凶" style="width: 100%; border-radius: 5px;">
-                <img src="3.jpg" alt="大吉" style="width: 100%; border-radius: 5px;">
-                <img src="4.jpg" alt="中吉" style="width: 100%; border-radius: 5px;">
-            </div>
-            <button onclick="toggleModal()" 
-                style="margin-top: 20px; padding: 10px 20px; font-size: 16px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                关闭
-            </button>
-        </div>
-    </div>
+        /* 加载提示样式 */
+        #loading-tip {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 5px;
+            z-index: 100;
+            /* 确保在最上层 */
+            display: none;
+            /* 默认隐藏 */
+        }
+    </style>
+</head>
 
+<body>
     <script>
-        function toggleModal() {
-            const modal = document.getElementById('modal');
-            modal.style.display = modal.style.display === 'none' || modal.style.display === '' ? 'block' : 'none';
+        // 避免生成灰色或相近颜色的函数
+        function avoidGray(r, g, b) {
+            // 定义一个阈值，用于判断颜色通道值是否相近
+            const threshold = 2;
+            const isSimilar = Math.abs(r - g) <= threshold && Math.abs(g - b) <= threshold && Math.abs(r - b) <= threshold;
+            if (isSimilar) {
+                const randomChannel = Math.floor(Math.random() * 3);
+                const adjustment = Math.floor(Math.random() * 30) + 10; // 随机调整幅度 10 - 39
+                if (randomChannel === 0) {
+                    r = Math.min(255, Math.max(150, r + (Math.random() > 0.5 ? adjustment : -adjustment)));
+                } else if (randomChannel === 1) {
+                    g = Math.min(255, Math.max(150, g + (Math.random() > 0.5 ? adjustment : -adjustment)));
+                } else {
+                    b = Math.min(255, Math.max(150, b + (Math.random() > 0.5 ? adjustment : -adjustment)));
+                }
+            }
+            return [r, g, b];
+        }
+
+        // 在页面加载时就确定随机调整值
+        function generateAdjustments() {
+            const randomChannel1 = Math.floor(Math.random() * 3);
+            const adjustment1 = Math.floor(Math.random() * 30) + 10;
+            const randomChannel2 = Math.floor(Math.random() * 3);
+            const adjustment2 = Math.floor(Math.random() * 30) + 10;
+            return {
+                randomChannel1,
+                adjustment1,
+                randomChannel2,
+                adjustment2
+            };
+        }
+
+        const {
+            randomChannel1,
+            adjustment1,
+            randomChannel2,
+            adjustment2
+        } = generateAdjustments();
+
+        // 修改后的颜色调整函数
+        function adjustColor(r, g, b, channel, adjustment) {
+            // 确保调整后的颜色值在150-255范围内
+            const newValue = Math.min(255, Math.max(150,
+                channel === 0 ? r + adjustment :
+                channel === 1 ? g + adjustment :
+                b + adjustment
+            ));
+
+            // 返回调整后的RGB值
+            return [
+                channel === 0 ? newValue : r,
+                channel === 1 ? newValue : g,
+                channel === 2 ? newValue : b
+            ];
+        }
+
+        // 页面加载完成后设置初始渐变背景
+        window.onload = function() {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            // 取窗口中心位置作为初始鼠标位置
+            const x = 0;
+            const y = windowHeight / 2;
+
+            // 生成淡色的 RGB 值（范围 150 - 255）
+            let r1 = Math.floor(150 + (x / windowWidth) * 105);
+            let g1 = Math.floor(150 + (y / windowHeight) * 105);
+            let b1 = Math.floor(150 + ((x + y) / (windowWidth + windowHeight)) * 105);
+
+            let r2 = Math.floor(150 + ((windowWidth - x) / windowWidth) * 105);
+            let g2 = Math.floor(150 + ((windowHeight - y) / windowHeight) * 105);
+            let b2 = Math.floor(150 + ((windowWidth + windowHeight - x - y) / (windowWidth + windowHeight)) * 105);
+
+            // 使用预先确定的调整值
+            if (Math.abs(r1 - g1) <= 30 && Math.abs(g1 - b1) <= 30 && Math.abs(r1 - b1) <= 30) {
+                [r1, g1, b1] = adjustColor(r1, g1, b1, randomChannel1, adjustment1);
+            }
+
+            if (Math.abs(r2 - g2) <= 30 && Math.abs(g2 - b2) <= 30 && Math.abs(r2 - b2) <= 30) {
+                [r2, g2, b2] = adjustColor(r2, g2, b2, randomChannel2, adjustment2);
+            }
+
+            // 创建渐变背景
+            document.body.style.backgroundImage = `linear-gradient(to bottom right, rgb(${r1}, ${g1}, ${b1}), rgb(${r2}, ${g2}, ${b2}))`;
+        };
+
+        // 提取渐变逻辑为单独函数
+        function updateGradient(x, y) {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            // 生成淡色的 RGB 值（范围 150 - 255）
+            let r1 = Math.floor(150 + (x / windowWidth) * 105);
+            let g1 = Math.floor(150 + (y / windowHeight) * 105);
+            let b1 = Math.floor(150 + ((x + y) / (windowWidth + windowHeight)) * 105);
+
+            let r2 = Math.floor(150 + ((windowWidth - x) / windowWidth) * 105);
+            let g2 = Math.floor(150 + ((windowHeight - y) / windowHeight) * 105);
+            let b2 = Math.floor(150 + ((windowWidth + windowHeight - x - y) / (windowWidth + windowHeight)) * 105);
+
+            // 使用预先确定的调整值
+            if (Math.abs(r1 - g1) <= 30 && Math.abs(g1 - b1) <= 30 && Math.abs(r1 - b1) <= 30) {
+                [r1, g1, b1] = adjustColor(r1, g1, b1, randomChannel1, adjustment1);
+            }
+
+            if (Math.abs(r2 - g2) <= 30 && Math.abs(g2 - b2) <= 30 && Math.abs(r2 - b2) <= 30) {
+                [r2, g2, b2] = adjustColor(r2, g2, b2, randomChannel2, adjustment2);
+            }
+
+            // 创建渐变背景
+            document.body.style.backgroundImage = `linear-gradient(to bottom right, rgb(${r1}, ${g1}, ${b1}), rgb(${r2}, ${g2}, ${b2}))`;
+        }
+
+        // 鼠标移动事件
+        document.addEventListener('mousemove', function(event) {
+            updateGradient(event.clientX, event.clientY);
+        });
+
+        // 触摸移动事件
+        document.addEventListener('touchmove', function(event) {
+            event.preventDefault(); // 防止触摸时的默认行为
+            const touch = event.touches[0];
+            updateGradient(touch.clientX, touch.clientY);
+        }, {
+            passive: false
+        });
+    </script>
+    <!-- <body style="background-image:url('/nene.png');">  -->
+    <script type="text/javascript">
+        // 切换显示/隐藏
+        function display(id) {
+            var target = document.getElementById(id);
+            target.style.display = target.style.display === "none" ? "" : "none";
+        }
+
+        // 新增：切换z-index功能
+        function toggleDrag() {
+            var container = document.getElementById('model-container');
+            // 创建提示元素（如果不存在）
+            let loadingTip = document.getElementById('loading-tip');
+            if (!loadingTip) {
+                loadingTip = document.createElement('div');
+                loadingTip.id = 'loading-tip';
+                loadingTip.textContent = '模型加载中...';
+                document.body.appendChild(loadingTip);
+            }
+            if (!container) {
+                // 显示加载提示
+                loadingTip.style.display = 'block';
+                // 加载模型
+                jiazaidoro();
+                // 延迟检查容器是否创建
+                const checkLoaded = setInterval(() => {
+                    container = document.getElementById('model-container');
+                    if (container) {
+                        clearInterval(checkLoaded);
+                        loadingTip.style.display = 'none'; // 隐藏提示
+                        toggleDrag(); // 执行切换逻辑
+                    }
+                }, 200); // 每200ms检查一次
+                return;
+            }
+            // 原有切换逻辑
+            var currentZIndex = parseInt(container.style.zIndex || window.getComputedStyle(container).zIndex);
+            var newZIndex = currentZIndex === 1 ? -1 : 1;
+            container.style.zIndex = newZIndex;
         }
     </script>
-			<br> <small><small><small> 掐指一算，下次<i style="color:#FFA15D;" >咕咕咕</i>的概率为<script language="javascript">
-							var number = Math.random();
-							number = Math.ceil(number * 100);
-							document.write(number);
-						</script>%！ </small></small></small> 
-				<script>
-				/*
+
+    <input type="button" value="隐藏👀" onclick="display('l')" style="position: relative;z-index:2;float:right;">
+    <input type="button" value="召唤🍊" onclick="toggleDrag()" style="position: relative;z-index:2;float:left;">
+    <div id="l" align="center" style="margin:auto;background-color:#ffffff8f;width:370px;">
+        <h1>Gmaozi pages！</h1>
+        <div>
+            <small><small>一言可以点哦~</small></small>( ˘▽˘)っ♨ <br><iframe src="box/a" name="myframe" width="300" height="100" scrolling="NO" frameborder="1" id="myframe" border="0"></iframe>
+        </div>
+        <hr>
+        <div>
+            这里准备放点<a href="box" style="color:#000000;" onclick="replaceWithIframe(this.href)">东西</a>
+            <br>
+            <div id="image-container">
+                <!-- 图片将显示在这里 -->
+            </div>
+            <script>
+                // 定义图片数组
+                const images = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"];
+
+                // 获取当天的日期（例如，20241120）
+                const today = new Date();
+                const dayKey = today.getFullYear() + "" + (today.getMonth() + 1) + "" + today.getDate();
+
+                // 使用日期生成随机数种子
+                function seededRandom(seed) {
+                    let x = Math.sin(seed) * 10000;
+                    return x - Math.floor(x);
+                }
+
+                // 计算种子（将日期字符串转为数值）
+                const seed = parseInt(dayKey, 10);
+
+                // 基于种子生成随机索引
+                const randomIndex = Math.floor(seededRandom(seed) * images.length);
+
+                // 获取随机图片
+                const selectedImage = images[randomIndex];
+
+                // 在页面显示图片
+                const imgElement = document.createElement("img");
+                imgElement.src = selectedImage;
+                imgElement.alt = "随机图片";
+                imgElement.style.maxWidth = "100%";
+                imgElement.style.height = "auto";
+                document.getElementById("image-container").appendChild(imgElement);
+            </script>
+            <!-- 主界面 -->
+            <u onclick="toggleModal()" style="font-size: 12px; color: #333;">关于软糖运势</u>
+            <!-- 悬浮窗 -->
+            <div id="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); overflow-y: auto; z-index: 1000; -webkit-overflow-scrolling: touch;">
+                <div style="min-height: 100vh; display: flex; justify-content: center; padding: 20px; box-sizing: border-box;">
+                    <div style="width: 90%; max-width: 600px; background-color: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                        <p style="font-size: 16px; color: #555; margin-bottom: 20px; text-align: left;">
+                            这原本是雪见软糖酱（LxBot）的签到附属功能，会在群聊签到时随着经验值等其他信息一同发送给使用者。<br>
+                            我觉得软糖可爱便放在了这里，每天的图片都会不一样,4种状态都是等概率的，所以抽到凶就是四分之一的注定了。
+                        </p>
+                        <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 10px;">
+                            <img src="1.jpg" alt="吉" style="width: 100%; border-radius: 5px;">
+                            <img src="2.jpg" alt="凶" style="width: 100%; border-radius: 5px;">
+                            <img src="3.jpg" alt="大吉" style="width: 100%; border-radius: 5px;">
+                            <img src="4.jpg" alt="中吉" style="width: 100%; border-radius: 5px;">
+                        </div>
+                        <button onclick="toggleModal()" style="margin-top: 20px; padding: 10px 20px; font-size: 16px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            关闭
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function toggleModal() {
+                    const modal = document.getElementById('modal');
+                    modal.style.display = modal.style.display === 'none' || modal.style.display === '' ? 'block' : 'none';
+                }
+            </script>
+            <br> <small><small><small> 掐指一算，下次<i style="color:#FFA15D;">咕咕咕</i>的概率为<script language="javascript">
+                            var number = Math.random();
+                            number = Math.ceil(number * 100);
+                            document.write(number);
+                        </script>%！ </small></small></small>
+            <script>
+                /*
 				* @name:
 				看板娘
 				* @Author:
@@ -250,131 +303,134 @@
 				2021-5-9 3:
 				50
 				*/
-				(function(){
-					const w = window,
-					/*
-					以下参数可修改，=null表示恢复默认值
-					*/
-					onlyWifi=false;
-					
-					/*
-					仅在Wifi环境运行
-					*/
-					w.kbn_setting0=6;
-					
-					/*
-					人物ID
-					*/
-					w.kbn_setting1=19;
-					
-					/*
-					衣服ID
-					*/
-					w.kbn_setting2=false;
-					
-					/*
-					是否显示关闭按钮
-					*/
-					w.kbn_setting3='180x170';
-					
-					/*
-					看板娘大小
-					*/
-					w.kbn_setting4='right:10';
-					
-					/*
-					停靠侧:
-					到侧边距离
-					*/
-					w.kbn_setting5='160x50';
-					
-					/*
-					提示框大小
-					*/
-					w.kbn_setting6='14px';
-					
-					/*
-					提示框字体大小
-					*/
-					w.kbn_setting7='-13px';
-					
-					/*
-					提示框Y轴偏移
-					*/
-					w.kbn_setting8='18px';
-					
-					/*
-					工具栏图标大小
-					*/
-					w.kbn_setting9='36px';
-					
-					/*
-					工具栏行高
-					*/
-					w.kbn_setting10=null;
-					
-					/*
-					一言API可选'fghrsh.net', 'hitokoto.cn', 'jinrishici.com'(古诗词)
-					*/
-					
-					/*
-					－－－－以下勿改－－－－
-					*/
-					const key=encodeURIComponent('看板娘:执行判断');
-					if(w[key]||(!(onlyWifi==false)&&navigator.connection.type!='wifi')){
-						return;
-					}
-					try{
-						w[key]=true;
-						const lib=document.createElement('script');
-						lib.src='https://cdn.jsdelivr.net/gh/IlysvlVEizbr/Live2D@1.9/kbn.js';
-						lib.defer=true;
-						document.body.append(lib);
-					}
-					catch(err){
-						console.log('看板娘：',err);
-					}
-				}
-				)();
-			</script> 
-		</div>  
-<hr>
-<div>
-<a href="web">站点收藏</a>│<a href="about">关于本站</a>│<a href="a">浮动测试页</a>
-<p><small>试试这个东西，好玩！↑</small>
-<p><div><small><small>帽の前端回忆 © 2021-2025 </small></small></div>
-</div>
-</div>
+                function kanbanniang() {
+
+                    (function() {
+                        const w = window,
+                            /*
+                            以下参数可修改，=null表示恢复默认值
+                            */
+                            onlyWifi = false;
+
+                        /*
+                        仅在Wifi环境运行
+                        */
+                        w.kbn_setting0 = 6;
+
+                        /*
+                        人物ID
+                        */
+                        w.kbn_setting1 = 19;
+
+                        /*
+                        衣服ID
+                        */
+                        w.kbn_setting2 = false;
+
+                        /*
+                        是否显示关闭按钮
+                        */
+                        w.kbn_setting3 = '180x170';
+
+                        /*
+                        看板娘大小
+                        */
+                        w.kbn_setting4 = 'right:10';
+
+                        /*
+                        停靠侧:
+                        到侧边距离
+                        */
+                        w.kbn_setting5 = '160x50';
+
+                        /*
+                        提示框大小
+                        */
+                        w.kbn_setting6 = '14px';
+
+                        /*
+                        提示框字体大小
+                        */
+                        w.kbn_setting7 = '-13px';
+
+                        /*
+                        提示框Y轴偏移
+                        */
+                        w.kbn_setting8 = '18px';
+
+                        /*
+                        工具栏图标大小
+                        */
+                        w.kbn_setting9 = '36px';
+
+                        /*
+                        工具栏行高
+                        */
+                        w.kbn_setting10 = null;
+
+                        /*
+                        一言API可选'fghrsh.net', 'hitokoto.cn', 'jinrishici.com'(古诗词)
+                        */
+
+                        /*
+                        －－－－以下勿改－－－－
+                        */
+                        const key = encodeURIComponent('看板娘:执行判断');
+                        if (w[key] || (!(onlyWifi == false) && navigator.connection.type != 'wifi')) {
+                            return;
+                        }
+                        try {
+                            w[key] = true;
+                            const lib = document.createElement('script');
+                            lib.src = 'https://cdn.jsdelivr.net/gh/IlysvlVEizbr/Live2D@1.9/kbn.js';
+                            lib.defer = true;
+                            document.body.append(lib);
+                        } catch (err) {
+                            console.log('看板娘：', err);
+                        }
+                    })();
+                }
+            </script>
+        </div>
+        <hr>
+        <div>
+            <a href="web" onclick="replaceWithIframe(this.href)">站点收藏</a>│<a href="about" onclick="replaceWithIframe(this.href)">关于本站</a>│<u onclick="kanbanniang()" style="color: #0000EE; cursor: pointer;">加载看版娘</u>
+            <p><small>试试这个东西，好玩 ↑</small>
+            <p>
+            <div><small><small>帽の花哨主页 © 2021-2025 </small></small></div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
-    
+
     <script>
-        // 初始化场景
-        // 3D模型初始化
-        const scene = new THREE.Scene();
-        scene.background = null; // 透明背景
-        
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(5, 5, 5);
-        
-        const renderer = new THREE.WebGLRenderer({ 
-            antialias: true,
-            alpha: true ,// 启用透明度
-        });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true; // 启用阴影
-        // 创建容器div放在body末尾
-const modelContainer = document.createElement('div');
-modelContainer.id = 'model-container';
-document.body.appendChild(modelContainer);
+        function jiazaidoro() {
+            // 初始化场景
+            // 3D模型初始化
+            const scene = new THREE.Scene();
+            scene.background = null; // 透明背景
 
-// 将渲染器添加到这个容器中
-modelContainer.appendChild(renderer.domElement);
+            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(5, 5, 5);
 
-// CSS样式（添加到<head>或样式表中）
-const style = document.createElement('style');
-style.textContent = `
+            const renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                alpha: true, // 启用透明度
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true; // 启用阴影
+            // 创建容器div放在body末尾
+            const modelContainer = document.createElement('div');
+            modelContainer.id = 'model-container';
+            document.body.appendChild(modelContainer);
+
+            // 将渲染器添加到这个容器中
+            modelContainer.appendChild(renderer.domElement);
+
+            // CSS样式（添加到<head>或样式表中）
+            const style = document.createElement('style');
+            style.textContent = `
   #model-container {
     position: fixed;
     bottom: 0;
@@ -384,82 +440,212 @@ style.textContent = `
     z-index: -1;
   }
 `;
-document.head.appendChild(style);
-        //document.body.appendChild(renderer.domElement);
-        
-        // 增强光照系统
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-        scene.add(ambientLight);
-        
-        // 主光源（更亮）
-        const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        mainLight.position.set(1, 1, 1);
-        mainLight.castShadow = true;
-        mainLight.shadow.mapSize.width = 2048;
-        mainLight.shadow.mapSize.height = 2048;
-        scene.add(mainLight);
-        
-        // 辅助光源
-        const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        fillLight.position.set(-1, 0.5, -1);
-        scene.add(fillLight);
-        
-        // 添加轨道控制器
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.screenSpacePanning = true;
-        
-        // 加载模型
-        const loader = new THREE.GLTFLoader();
-        loader.load(
-            '1.glb',
-            function(gltf) {
-                const model = gltf.scene;
-                scene.add(model);
-                
-                // 自动调整相机位置（保持正视图视角）
-                const box = new THREE.Box3().setFromObject(model);
-                const center = box.getCenter(new THREE.Vector3());
-                const size = box.getSize(new THREE.Vector3());
-                
-                // 保持Z轴正视图，根据模型大小调整距离
-                const maxDim = Math.max(size.x, size.y, size.z);
-                camera.position.z = maxDim * 2;
-                camera.lookAt(center);
-                
-                controls.target.copy(center);
+            document.head.appendChild(style);
+            //document.body.appendChild(renderer.domElement);
+
+            // 增强光照系统
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+
+            // 主光源（更亮）
+            const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            mainLight.position.set(1, 1, 1);
+            mainLight.castShadow = true;
+            mainLight.shadow.mapSize.width = 2048;
+            mainLight.shadow.mapSize.height = 2048;
+            scene.add(mainLight);
+
+            // 辅助光源
+            const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            fillLight.position.set(-1, 0.5, -1);
+            scene.add(fillLight);
+
+            // 添加轨道控制器
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = true;
+
+            // 加载模型
+            const loader = new THREE.GLTFLoader();
+            loader.load(
+                '1.glb',
+                function(gltf) {
+                    const model = gltf.scene;
+                    scene.add(model);
+
+                    // 自动调整相机位置（保持正视图视角）
+                    const box = new THREE.Box3().setFromObject(model);
+                    const center = box.getCenter(new THREE.Vector3());
+                    const size = box.getSize(new THREE.Vector3());
+
+                    // 保持Z轴正视图，根据模型大小调整距离
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    camera.position.z = maxDim * 2;
+                    camera.lookAt(center);
+
+                    controls.target.copy(center);
+                    controls.update();
+
+                    // 添加辅助工具
+                    //const axesHelper = new THREE.AxesHelper(maxDim);
+                    //scene.add(axesHelper);
+
+                    // 添加网格地面
+                    //const gridHelper = new THREE.GridHelper(maxDim * 2, 20, 0x888888, 0xcccccc);
+                    //scene.add(gridHelper);
+                },
+                undefined,
+                function(error) {
+                    console.error('加载模型出错:', error);
+                }
+            );
+
+            // 处理窗口大小变化
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // 动画循环
+            function animate() {
+                requestAnimationFrame(animate);
                 controls.update();
-                
-                // 添加辅助工具
-                //const axesHelper = new THREE.AxesHelper(maxDim);
-                //scene.add(axesHelper);
-                
-                // 添加网格地面
-                //const gridHelper = new THREE.GridHelper(maxDim * 2, 20, 0x888888, 0xcccccc);
-                //scene.add(gridHelper);
-            },
-            undefined,
-            function(error) {
-                console.error('加载模型出错:', error);
+                renderer.render(scene, camera);
             }
-        );
-        
-        // 处理窗口大小变化
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-        
-        // 动画循环
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-            renderer.render(scene, camera);
+            animate();
         }
-        animate();
-        
+        // 修复悬浮窗触摸滚动问题
+        document.getElementById('modal').addEventListener('touchmove', function(e) {
+            // 允许悬浮窗内部滚动
+            e.stopPropagation();
+        }, {
+            passive: true
+        });
+        // 标准化URL，处理等效情况（如/index.html、/、空路径的统一）
+        function normalizeUrl(url) {
+            try {
+                const parsed = new URL(url);
+                // 移除末尾斜杠（如https://a.com/ → https://a.com）
+                parsed.pathname = parsed.pathname.replace(/\/$/, '');
+                // 处理默认首页（如/index.html → 空路径）
+                if (parsed.pathname.toLowerCase() === '/index.html') {
+                    parsed.pathname = '';
+                }
+                return parsed.href;
+            } catch (e) {
+                return url; // 解析失败时返回原始URL
+            }
+        }
+        // 记录原网页的基础URL（根据实际域名修改，例如你的网站是https://example.com，则写这个）
+        // 标准化原网页URL，处理等效情况
+        const originalNormalizedUrl = normalizeUrl(window.location.href);
+        // 如果需要精确匹配，可以手动指定，例如：
+        // const originalBaseUrl = 'https://你的网站域名';
+// 打开iframe悬浮窗（仅电脑端生效）
+function replaceWithIframe(url) {
+    event.preventDefault(); // 阻止a标签默认跳转
+
+    // 判断是否为电脑端（屏幕宽度 >= 768px 视为电脑端，可根据需要调整）
+    const isDesktop = window.innerWidth >= 768;
+
+    if (!isDesktop) {
+        // 移动端：直接在新窗口打开链接（不显示悬浮窗）
+        window.open(url, '_blank');
+        return; // 终止函数，不执行悬浮窗逻辑
+    }
+
+    // 电脑端：正常显示iframe悬浮窗
+    const modal = document.getElementById('iframeModal');
+    const iframe = document.getElementById('contentIframe');
+    const urlDisplay = document.getElementById('iframeUrlDisplay');
+    const newWindowBtn = document.getElementById('openNewWindow');
+
+    // 初始设置
+    iframe.src = url;
+    urlDisplay.textContent = url;
+    modal.style.display = 'block';
+
+    // 绑定新窗口打开事件
+    newWindowBtn.onclick = () => {
+        window.open(iframe.src, '_blank');
+    };
+
+    // 监听iframe加载完成事件（处理等效URL）
+    iframe.onload = function() {
+        try {
+            const currentIframeUrl = iframe.contentWindow.location.href;
+            const normalizedIframeUrl = normalizeUrl(currentIframeUrl);
+            urlDisplay.textContent = currentIframeUrl;
+
+            if (normalizedIframeUrl === originalNormalizedUrl) {
+                setTimeout(closeIframeModal, 500);
+            }
+        } catch (e) {
+            console.log('无法获取iframe URL（跨域限制）:', e);
+        }
+    };
+}
+
+
+        // 关闭iframe悬浮窗（保持不变）
+        function closeIframeModal() {
+            const modal = document.getElementById('iframeModal');
+            const iframe = document.getElementById('contentIframe');
+            modal.style.display = 'none';
+            iframe.src = ''; // 清空iframe内容
+        }
     </script>
-	</body>
+    <!-- iframe悬浮窗 -->
+    <div id="iframeModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); overflow-y: auto; z-index: 1001; -webkit-overflow-scrolling: touch;">
+        <div style="min-height: 100vh; padding: 20px; box-sizing: border-box;">
+            <div style="width: 90%; max-width: 1000px; margin: 0 auto; background-color: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);">
+                <!-- 顶部导航栏 -->
+                <div style="padding: 12px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                    <div id="iframeUrlDisplay" style="word-break: break-all; color: #333; max-width: 70%;"></div>
+                    <!-- 加载自定义链接按钮 -->
+                    <div style="display: flex; gap: 8px;">
+        <button id="loadCustomUrl" style="padding: 6px 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+            加载自定义链接
+        </button>
+        <button id="openNewWindow" style="padding: 6px 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+            新窗口（全屏）打开
+        </button>
+    </div>
+                </div>
+                <!-- iframe内容区 -->
+                <iframe id="contentIframe" style="width: 100%; min-height: 80vh; border: none;"></iframe>
+                <!-- 关闭按钮 -->
+                <div style="padding: 12px 20px; border-top: 1px solid #eee; text-align: right;">
+                    <button onclick="closeIframeModal()" style="padding: 8px 16px; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 绑定加载自定义链接按钮事件
+        document.getElementById('loadCustomUrl').addEventListener('click', function() {
+            // 弹出输入框获取网址
+            const customUrl = prompt('请输入要加载的网址（需包含http/https）：', 'https://');
+
+            // 验证输入（非空且包含协议）
+            if (customUrl && (customUrl.startsWith('http://') || customUrl.startsWith('https://'))) {
+                const iframe = document.getElementById('contentIframe');
+                const urlDisplay = document.getElementById('iframeUrlDisplay');
+
+                // 加载自定义链接
+                iframe.src = customUrl;
+                // 更新顶部显示的链接
+                urlDisplay.textContent = customUrl;
+            } else if (customUrl) {
+                // 提示格式错误
+                alert('请输入有效的网址（需以http://或https://开头）');
+            }
+        });
+    </script>
+</body>
+
 </html>
