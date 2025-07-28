@@ -1,6 +1,6 @@
 [
     {
-        "title": "将PDF按A4拆分的py代码",
+        "title": "将PDF按A4拆分的python程序",
         "description": "import fitz  # pip install pymupdf\nim......",
         "status": "published",
         "date": "2025-07-28 23:27:02",
