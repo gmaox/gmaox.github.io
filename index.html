@@ -127,6 +127,7 @@ let gradientEnabled = true;
 
         // 提取渐变逻辑为单独函数
         function updateGradient(x, y) {
+            if (!gradientEnabled) return;
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
 
