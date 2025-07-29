@@ -276,6 +276,8 @@ function changeBackground() {
     // 显示背景加载提示
     loadingTip.textContent = '背景加载中...';
     loadingTip.style.display = 'block';
+    // 关闭渐变更新
+    gradientEnabled = false;
 
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
@@ -312,8 +314,6 @@ function changeBackground() {
         img.style.objectPosition = 'center';
         bgContainer.appendChild(img);
 
-        // 关闭渐变更新
-        gradientEnabled = false;
         // 显示查看按钮
         document.getElementById('viewBackground').style.display = 'inline';
     };
