@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeskGamix 历史版本</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            color: #2d3748;
+            font-size: 1.5rem;
+        }
+
+        .version-tag {
+            display: inline-block;
+            background-color: #4299e1;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .update-info {
+            margin: 1.5rem 0;
+            line-height: 1.8;
+            color: #4a5568;
+        }
+
+        .update-info ul {
+            padding-left: 1.5rem;
+        }
+
+        /* 下载区域默认收起 */
+        .download-area {
+            margin: 2rem 0;
+            display: none;
+        }
+
+        .link-switch {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .link-switch label {
+            margin-right: 1.5rem;
+            color: #4a5568;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .file-list {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background-color: #38b2ac;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: #319795;
+        }
+
+        .file-name {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+            text-align: center;
+        }
+
+        .tips {
+            color: #718096;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-top: 1rem;
+        }
+
+        .loading, .error {
+            text-align: center;
+            padding: 3rem;
+            color: #718096;
+        }
+
+        .back-btn {
+            display: block;
+            width: 120px;
+            padding: 0.6rem;
+            background-color: #e2e8f0;
+            color: #2d3748;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin: 0 auto 2rem;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #cbd5e1;
+        }
+
+        /* 展开/收起按钮 */
+        .toggle-btn {
+            padding: 0.6rem 1.2rem;
+            background-color: #e2e8f0;
+            color: #2d3748;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-btn:hover {
+            background-color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+    <a href="./index.html" class="back-btn">返回首页</a>
+    <div class="loading" id="loading">正在获取历史版本信息...</div>
+    <div class="error" id="error" style="display: none;">获取版本信息失败，请稍后重试</div>
+    <div id="historyContainer" style="display: none;"></div>
+
+    <script>
+        const GITHUB_REPO = "gmaox/deskgamix";
+        const LATEST_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
+        const ALL_RELEASES_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases`;
+        const ACCELERATE_PREFIX = "https://ghfast.top/";
+
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('error');
+        const historyContainer = document.getElementById('historyContainer');
+
+        window.onload = async () => {
+            try {
+                // 先获取最新版本号
+                const latestRes = await fetch(LATEST_API_URL);
+                if (!latestRes.ok) throw new Error("获取最新版本失败");
+                const latestRelease = await latestRes.json();
+                const latestTagName = latestRelease.tag_name;
+
+                // 再获取所有版本并过滤掉最新的
+                const allRes = await fetch(ALL_RELEASES_API_URL);
+                if (!allRes.ok) throw new Error("获取所有版本失败");
+                let allReleases = await allRes.json();
+                allReleases = allReleases.filter(release => 
+                    !release.draft && !release.prerelease && release.tag_name !== latestTagName
+                );
+
+                renderHistoryReleases(allReleases);
+                loadingEl.style.display = "none";
+                historyContainer.style.display = "block";
+            } catch (err) {
+                console.error("获取失败：", err);
+                loadingEl.style.display = "none";
+                errorEl.style.display = "block";
+            }
+        };
+
+        function renderHistoryReleases(releases) {
+            historyContainer.innerHTML = '';
+            releases.forEach(release => {
+                const changelog = release.body || "暂无更新日志";
+                const changelogItems = changelog.split('\n').filter(item => item.trim()).map(item => `<li>${item.replace(/^- /, '')}</li>`).join('');
+
+                const card = document.createElement('div');
+                card.className = "card";
+
+                const fileList = document.createElement('div');
+                fileList.className = "file-list";
+                renderFileList(release.assets, fileList);
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h2>历史版本</h2>
+                        <span class="version-tag">${release.tag_name}</span>
+                    </div>
+                    <div class="update-info">
+                        <ul>${changelogItems}</ul>
+                    </div>
+                    <button class="toggle-btn">显示下载</button>
+                    <div class="download-area">
+                        <div class="link-switch">
+                            <label>
+                                <input type="radio" name="linkType_${release.tag_name}" value="accelerate" checked> 国内加速
+                            </label>
+                            <label>
+                                <input type="radio" name="linkType_${release.tag_name}" value="official"> 官方链接
+                            </label>
+                        </div>
+                    </div>
+                `;
+                card.querySelector('.download-area').appendChild(fileList);
+                historyContainer.appendChild(card);
+
+                // 绑定展开/收起事件
+                const toggleBtn = card.querySelector('.toggle-btn');
+                const downloadArea = card.querySelector('.download-area');
+                toggleBtn.addEventListener('click', () => {
+                    const isHidden = downloadArea.style.display === 'none' || !downloadArea.style.display;
+                    downloadArea.style.display = isHidden ? 'block' : 'none';
+                    toggleBtn.textContent = isHidden ? '隐藏下载' : '显示下载';
+                });
+
+                // 绑定链接切换事件
+                document.querySelectorAll(`input[name="linkType_${release.tag_name}"]`).forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        const selectedType = e.target.value;
+                        card.querySelectorAll('.download-btn').forEach(btn => {
+                            btn.href = btn.dataset[selectedType];
+                        });
+                    });
+                });
+            });
+        }
+
+        function renderFileList(assets, container) {
+            container.innerHTML = '';
+            assets.forEach(asset => {
+                const officialUrl = asset.browser_download_url;
+                const accelerateUrl = ACCELERATE_PREFIX + officialUrl;
+
+                const wrapper = document.createElement('div');
+                const btn = document.createElement('a');
+                btn.className = "download-btn";
+                btn.dataset.official = officialUrl;
+                btn.dataset.accelerate = accelerateUrl;
+                btn.href = accelerateUrl;
+                btn.textContent = "立即下载";
+
+                const fileName = document.createElement('div');
+                fileName.className = "file-name";
+                fileName.textContent = asset.name;
+
+                wrapper.appendChild(btn);
+                wrapper.appendChild(fileName);
+                container.appendChild(wrapper);
+            });
+        }
+    </script>
+</body>
+</html>
