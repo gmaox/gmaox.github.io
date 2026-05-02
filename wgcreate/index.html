@@ -1229,6 +1229,7 @@
                     element_type: 33,
                     element_mode: 0,
                     element_sense: 35,
+                    element_layer: 40,
                     element_middle_value: "k59",
                     element_down_value: "k47",
                     element_up_value: "k51",
@@ -1261,6 +1262,7 @@
                     element_type: 2,
                     element_mode: 0,
                     element_sense: 100,
+                    element_layer: 40,
                     extra_attributes: "{\"isTrackpadMode\":true}"
                 };
             }
@@ -1269,6 +1271,7 @@
                     element_type: 2,
                     element_mode: 0,
                     element_sense: 100,
+                    element_layer: 40,
                     extra_attributes: "{\"isTrackpadMode\":false}"
                 };
             }
@@ -1335,6 +1338,7 @@
             const mapped = typeMap[type];
             const value = normalizeValueCode(mapped || type);
             const meta = getElementMeta(type);
+            const elementText = ["拖动+左", "拖动+右", "拖动+中", "触控板"].includes(type) ? "" : type;
 
             return {
                 element_id: elementId,
@@ -1342,7 +1346,7 @@
                 element_height: height,
                 element_central_x: x,
                 element_central_y: y,
-                element_text: type,
+                element_text: elementText,
                 element_value: value,
                 config_id: configId,
                 element_radius: 10,
