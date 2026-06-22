@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="page_title">使用文档 - Simplenite</title>
+    <style>
+        :root {
+            --primary: #e60012;
+            --primary-dark: #c4000f;
+            --bg: #0f0f0f;
+            --surface: #1a1a1a;
+            --surface-hover: #252525;
+            --text: #f5f5f5;
+            --text-secondary: #a0a0a0;
+            --border: #2a2a2a;
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(15,15,15,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .navbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover { opacity: 0.8; }
+
+        .logo-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.25rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .lang-switch:hover { border-color: var(--primary); }
+
+        .lang-btn {
+            padding: 0.35rem 0.8rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .lang-btn.active { background: var(--primary); color: white; }
+
+        .page-header {
+            padding: 8rem 2rem 3rem;
+            text-align: center;
+            background: radial-gradient(ellipse at 50% 0%, rgba(230,0,18,0.1) 0%, transparent 50%);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .docs-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 3rem;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 84px;
+            height: fit-content;
+        }
+
+        .sidebar-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li { margin-bottom: 0.25rem; }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .doc-content h2 {
+            font-size: 1.5rem;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .doc-content h2:first-child { margin-top: 0; }
+
+        .doc-content h3 {
+            font-size: 1.15rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--text);
+        }
+
+        .doc-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .doc-content ul, .doc-content ol {
+            color: var(--text-secondary);
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .doc-content li { margin-bottom: 0.4rem; }
+
+        .doc-content code {
+            background: var(--surface);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+
+        .doc-content pre {
+            background: var(--surface);
+            padding: 1rem;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .doc-content pre code {
+            background: none;
+            padding: 0;
+            color: var(--text);
+        }
+
+        .doc-content a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .doc-content a:hover { text-decoration: underline; }
+
+        .info-box {
+            background: rgba(230,0,18,0.08);
+            border: 1px solid rgba(230,0,18,0.2);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .info-box p { margin: 0; color: var(--text); }
+
+        .footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer a:hover { color: var(--primary); }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px; left: 0; right: 0;
+                background: var(--bg);
+                flex-direction: column;
+                padding: 1rem 2rem;
+                gap: 1rem;
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-links.open { display: flex; }
+            .menu-toggle { display: block; }
+            .docs-container {
+                grid-template-columns: 1fr;
+                padding: 0 1.5rem 3rem;
+            }
+            .sidebar { display: none; }
+            .page-header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="./index.html" class="logo">
+                <div class="logo-icon"><img src="./fav.ico" alt="Simplenite"></div>
+                <span data-i18n="brand">Simplenite</span>
+            </a>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="./index.html" data-i18n="nav_home">首页</a></li>
+                <li><a href="./docs.html" data-i18n="nav_docs">使用文档</a></li>
+                <li><a href="https://github.com/gmaox/deskgamix" target="_blank" data-i18n="nav_github">GitHub</a></li>
+                <li>
+                    <div class="lang-switch">
+                        <button class="lang-btn active" onclick="setLang('zh')" id="btnZh">中</button>
+                        <button class="lang-btn" onclick="setLang('en')" id="btnEn">EN</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1 data-i18n="page_heading">使用文档</h1>
+        <p data-i18n="page_subheading">快速上手 Simplenite，掌握所有功能</p>
+    </div>
+
+    <div class="docs-container">
+        <aside class="sidebar">
+            <div class="sidebar-title" data-i18n="sidebar_title">目录</div>
+            <ul class="sidebar-nav" id="sidebarNav">
+                <li><a href="#install" data-i18n="toc_install">安装与运行</a></li>
+                <li><a href="#sunshine" data-i18n="toc_sunshine">Sunshine 集成</a></li>
+                <li><a href="#xbox" data-i18n="toc_xbox">Xbox 全屏体验</a></li>
+                <li><a href="#faq" data-i18n="toc_faq">常见问题</a></li>
+            </ul>
+        </aside>
+
+        <article class="doc-content" id="docContent">
+            <h2 id="install" data-i18n="sec_install">安装与运行</h2>
+            <p data-i18n="install_p1">下载最新版本安装或解压后即可使用，需要注意软件数据和软件安装目录处于同一位置，可能会额外占用一点空间，卸载前可检查是否保留。</p>
+            <div class="info-box">
+                <p data-i18n="install_note">系统要求：Windows 10 / Windows 11（64位）</p>
+            </div>
+
+            <h2 id="sunshine" data-i18n="sec_sunshine">Sunshine 功能说明</h2>
+            <p data-i18n="sunshine_p1">Simplenite 与 Sunshine 共享游戏库。软件会自动检测 Sunshine 是否已安装，若存在，新添加的游戏将自动添加到 Sunshine 的游戏库中。</p>
+            <p data-i18n="sunshine_p2">这意味着你只需在 Simplenite 中管理一次游戏库，即可同时在本地启动和远程串流中使用。</p>
+
+            <h2 id="xbox" data-i18n="sec_xbox">Xbox 全屏体验</h2>
+            <p data-i18n="xbox_p1">如果你想在 Xbox 主机风格的纯全屏环境中使用 Simplenite，可以搭配 OmniConsole 实现：</p>
+            <ol>
+                <li data-i18n="xbox_step1"><a href="https://8bit2qubit.github.io/omniconsole-site/zh-CN/download/" target="_blank">点击安装 OmniConsole</a></li>
+                <li data-i18n="xbox_step2">按照 OmniConsole 教程完成全屏基础设置</li>
+                <li data-i18n="xbox_step3">将 Simplenite 添加在自定义栏目中</li>
+            </ol>
+            <p data-i18n="xbox_p2">设置完成后，即可在全屏模式下体验 Simplenite 的游戏库管理功能。</p>
+
+            <h2 id="faq" data-i18n="sec_faq">常见问题</h2>
+            <h3 data-i18n="faq_q3">如何添加游戏？</h3>
+            <p data-i18n="faq_a3">在 Simplenite 设置界面中，选择"添加游戏/管理游戏库"选项，在弹出的SunshineAppManage中按照界面说明添加即可。如需手动选择exe路径添加可点击右上角添加运行中程序然后点击任意程序后的文件夹图标选择添加即可。</p>
+            
+            <h3 data-i18n="faq_q2">手柄无法识别？</h3>
+            <p data-i18n="faq_a2">Simplenite 支持 Xbox 和 DS4 手柄，ps5和joycon未经测试可能出现映射键位不对应问题。</p>
+
+        </article>
+    </div>
+
+    <footer class="footer">
+        <p data-i18n="footer">
+            Simplenite - 开源游戏启动器 |
+            <a href="https://github.com/gmaox/deskgamix" target="_blank">GitHub</a> |
+            <a href="https://discord.gg/ZZBwvfht3" target="_blank">Discord</a> |
+            <a href="https://qm.qq.com/q/IdDakhAgo0" target="_blank">QQ</a> |
+            <a href="https://space.bilibili.com/258889407" target="_blank">B站</a>
+        </p>
+    </footer>
+
+    <script>
+        const i18n = {
+            zh: {
+                page_title: '使用文档 - Simplenite',
+                brand: 'Simplenite',
+                nav_home: '首页',
+                nav_docs: '使用文档',
+                nav_github: 'GitHub',
+                page_heading: '使用文档',
+                page_subheading: '快速上手 Simplenite，掌握所有功能',
+                sidebar_title: '目录',
+                toc_install: '安装与运行',
+                toc_build: '从源码构建',
+                toc_features: '功能说明',
+                toc_gamepad: '手柄操作',
+                toc_sunshine: 'Sunshine 集成',
+                toc_xbox: 'Xbox 全屏体验',
+                toc_faq: '常见问题',
+                sec_install: '安装与运行',
+                install_p1: 'Simplenite 是一款 Windows 平台的游戏启动器，无需安装即可运行。下载最新版本后解压，运行主程序即可启动。',
+                install_note: '系统要求：Windows 10 / Windows 11（64位）',
+                install_p2: '首次启动时，Simplenite 会自动检测系统环境并创建必要的配置文件。你可以在设置中调整游戏库路径、手柄映射等选项。',
+                sec_build: '从源码构建',
+                build_p1: '如果你想从源码运行或修改 Simplenite，请按以下步骤操作：',
+                build_step1: '下载并安装 Python 3.8.5 (64-bit)，安装时勾选 Add Python to PATH',
+                build_step2: '下载任意 IDE（例如 Visual Studio Code）',
+                build_step3: '在终端中运行以下命令安装依赖：',
+                build_step4: '从 dev 分支下载 .py 文件并运行',
+                sec_features: '功能说明',
+                feat_mouse_title: '鼠标模拟',
+                feat_mouse_desc: '使用手柄摇杆控制鼠标指针移动，非对称设计让左摇杆负责粗定位、右摇杆负责精确定位。特色键盘模拟系统可在需要时快速输入文字。',
+                feat_tools_title: '工具合集',
+                feat_tools_desc: '点击左上角快捷菜单可启动常用软件。你可以将某些工具设置为与游戏连携启动，这样打开游戏时相关工具也会自动运行。',
+                feat_save_title: '游戏存档同步',
+                feat_save_desc: '在设置中配置 WebDAV 服务器信息后，即可一键将本地存档上传至云端，或从云端下载存档到本地。支持自定义同步目录。',
+                feat_screenshot_title: '游戏截图',
+                feat_screenshot_desc: '按下手柄截图键即可快速截取当前游戏画面，截图保存在指定目录中，方便回顾和分享。',
+                feat_immersive_title: '沉浸模式',
+                feat_immersive_desc: '开启沉浸模式后，桌面图标和任务栏将被隐藏，只显示 Simplenite 界面，带来掌机般的纯粹游戏体验。',
+                sec_gamepad: '手柄操作',
+                gamepad_p1: 'Simplenite 全面支持 Xbox 和 DS4 手柄，所有界面均可通过手柄操作完成。常用操作如下：',
+                gamepad_li1: '左摇杆 / 方向键：导航选择',
+                gamepad_li2: 'A 键 / ✕ 键：确认 / 启动',
+                gamepad_li3: 'B 键 / ○ 键：返回 / 取消',
+                gamepad_li4: '菜单键：打开快捷工具栏',
+                gamepad_li5: '截图键：截取游戏画面',
+                sec_sunshine: 'Sunshine 集成',
+                sunshine_p1: 'Simplenite 与 Sunshine 共享游戏库。软件会自动检测 Sunshine 是否已安装，若存在，新添加的游戏将自动同步到 Sunshine 的游戏库中。',
+                sunshine_p2: '这意味着你只需在 Simplenite 中管理一次游戏库，即可同时在本地启动和远程串流中使用。',
+                sec_xbox: 'Xbox 全屏体验',
+                xbox_p1: '如果你想在 Xbox 主机风格的纯全屏环境中使用 Simplenite，可以搭配 OmniConsole 实现：',
+                xbox_step1: '点击安装 OmniConsole',
+                xbox_step2: '按照 OmniConsole 教程完成全屏基础设置',
+                xbox_step3: '将 Simplenite 添加在自定义栏目中',
+                xbox_p2: '设置完成后，即可在全屏模式下体验 Simplenite 的游戏库管理功能。',
+                sec_faq: '常见问题',
+                faq_q1: '启动后黑屏 / 闪退？',
+                faq_a1: '请确保已安装最新显卡驱动，并检查系统是否缺少必要的 Visual C++ 运行库。如从源码运行，请确认所有 Python 依赖已正确安装。',
+                faq_q2: '手柄无法识别？',
+                faq_a2: '请确认手柄已正确连接并被 Windows 识别。Simplenite 支持 Xbox 和 DS4 手柄，其他手柄可能需要通过 Steam 输入或第三方工具映射。',
+                faq_q3: '如何添加游戏？',
+                faq_a3: '在 Simplenite 主界面中，选择"添加游戏"选项，然后浏览到游戏的可执行文件（.exe）即可。添加后游戏封面会自动获取。',
+                footer: 'Simplenite - 开源游戏启动器 | <a href="https://github.com/gmaox/deskgamix" target="_blank">GitHub</a> | <a href="https://discord.gg/ZZBwvfht3" target="_blank">Discord</a> | <a href="https://qm.qq.com/q/IdDakhAgo0" target="_blank">QQ</a> | <a href="https://space.bilibili.com/258889407" target="_blank">B站</a>'
+            },
+            en: {
+                page_title: 'Documentation - Simplenite',
+                brand: 'Simplenite',
+                nav_home: 'Home',
+                nav_docs: 'Docs',
+                nav_github: 'GitHub',
+                page_heading: 'Documentation',
+                page_subheading: 'Get started with Simplenite and master all features',
+                sidebar_title: 'Contents',
+                toc_install: 'Installation',
+                toc_build: 'Build from Source',
+                toc_features: 'Features',
+                toc_gamepad: 'Gamepad Controls',
+                toc_sunshine: 'Sunshine Integration',
+                toc_xbox: 'Xbox Full-Screen',
+                toc_faq: 'FAQ',
+                sec_install: 'Installation',
+                install_p1: 'Download the latest release, install or extract it, and you\'re ready to go. Note that app data is stored in the same location as the installation directory, which may take up a bit of extra space. Check before uninstalling if you want to keep anything.',
+                install_note: 'System requirements: Windows 10 / Windows 11 (64-bit)',
+                install_p2: 'On first launch, Simplenite will auto-detect your environment and create necessary config files. You can adjust game library paths, gamepad mappings, and more in settings.',
+                sec_build: 'Build from Source',
+                build_p1: 'To run or modify Simplenite from source, follow these steps:',
+                build_step1: 'Download and install Python 3.8.5 (64-bit), and check Add Python to PATH during installation',
+                build_step2: 'Download any IDE (e.g. Visual Studio Code)',
+                build_step3: 'Run the following command in a terminal to install dependencies:',
+                build_step4: 'Download .py files from the dev branch and run them',
+                sec_features: 'Features',
+                feat_mouse_title: 'Mouse Emulation',
+                feat_mouse_desc: 'Use the gamepad sticks to control the mouse cursor. The asymmetric design uses the left stick for coarse movement and the right stick for fine positioning. A unique keyboard emulation system is available for quick text input.',
+                feat_tools_title: 'Utility Hub',
+                feat_tools_desc: 'Click the quick menu in the upper-left corner to launch commonly used apps. You can set certain tools to launch alongside games.',
+                feat_save_title: 'Save Sync',
+                feat_save_desc: 'After configuring your WebDAV server in settings, you can upload local saves to the cloud or download cloud saves to local with one click. Custom sync directories are supported.',
+                feat_screenshot_title: 'Screenshots',
+                feat_screenshot_desc: 'Press the screenshot button on your controller to instantly capture the current game screen. Screenshots are saved to a designated folder for easy review and sharing.',
+                feat_immersive_title: 'Immersive Mode',
+                feat_immersive_desc: 'When Immersive Mode is enabled, desktop icons and the taskbar are hidden, showing only the Simplenite interface for a handheld-console-like experience.',
+                sec_gamepad: 'Gamepad Controls',
+                gamepad_p1: 'Simplenite fully supports Xbox and DS4 controllers. All UI can be operated via gamepad. Common controls:',
+                gamepad_li1: 'Left stick / D-pad: Navigate',
+                gamepad_li2: 'A / ✕: Confirm / Launch',
+                gamepad_li3: 'B / ○: Back / Cancel',
+                gamepad_li4: 'Menu button: Open quick toolbar',
+                gamepad_li5: 'Screenshot button: Capture screen',
+                sec_sunshine: 'Sunshine Integration',
+                sunshine_p1: 'Simplenite shares its game library with Sunshine. The app automatically detects whether Sunshine is installed; if so, newly added games will be added to Sunshine\'s library automatically.',
+                sunshine_p2: 'This means you only need to manage your library once in Simplenite, and it works for both local launch and remote streaming.',
+                sec_xbox: 'Xbox Full-Screen Experience',
+                xbox_p1: 'If you want to use Simplenite in a pure full-screen environment like an Xbox console, you can pair it with OmniConsole:',
+                xbox_step1: 'Install OmniConsole',
+                xbox_step2: 'Follow the OmniConsole tutorial to complete the full-screen setup',
+                xbox_step3: 'Add Simplenite to the Custom section',
+                xbox_p2: 'After setup, you can enjoy Simplenite in full-screen mode.',
+                sec_faq: 'FAQ',
+                faq_q1: 'Black screen or crash on launch?',
+                faq_a1: 'Make sure you have the latest graphics drivers installed and that your system has the necessary Visual C++ redistributables. If running from source, confirm all Python dependencies are installed correctly.',
+                faq_q2: 'Controller not recognized?',
+                faq_a2: 'Simplenite supports Xbox and DS4 controllers. PS5 and Joy-Con controllers are untested and may have incorrect button mapping.',
+                faq_q3: 'How do I add games?',
+                faq_a3: 'In the Simplenite settings, select "Add Game / Manage Game Library" to open SunshineAppManage and follow the on-screen instructions. To manually add an executable, click "Add Running Program" in the top-right corner, then click the folder icon next to any program to add it.',
+                footer: 'Simplenite - Open Source Game Launcher | <a href="https://github.com/gmaox/deskgamix" target="_blank">GitHub</a> | <a href="https://discord.gg/ZZBwvfht3" target="_blank">Discord</a> | <a href="https://qm.qq.com/q/IdDakhAgo0" target="_blank">QQ</a> | <a href="https://space.bilibili.com/258889407" target="_blank">Bilibili</a>'
+            }
+        };
+
+        let currentLang = 'zh';
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.getElementById('btnZh').classList.toggle('active', lang === 'zh');
+            document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+            document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) {
+                    if (key === 'footer' || key === 'build_step1' || key === 'xbox_step1') {
+                        // Keep HTML links intact
+                        const tmp = document.createElement('div');
+                        tmp.innerHTML = i18n[lang][key];
+                        // Re-inject link if needed for specific keys
+                        if (key === 'build_step1') {
+                            el.innerHTML = '下载并安装 <a href="https://www.python.org/ftp/python/3.8.5/python-3.8.5-amd64.exe" target="_blank">Python 3.8.5 (64-bit)</a>，安装时勾选 <strong>Add Python to PATH</strong>';
+                            if (lang === 'en') el.innerHTML = 'Download and install <a href="https://www.python.org/ftp/python/3.8.5/python-3.8.5-amd64.exe" target="_blank">Python 3.8.5 (64-bit)</a>, and check <strong>Add Python to PATH</strong> during installation';
+                        } else if (key === 'xbox_step1') {
+                            el.innerHTML = '<a href="https://8bit2qubit.github.io/omniconsole-site/zh-CN/download/" target="_blank">点击安装 OmniConsole</a>';
+                            if (lang === 'en') el.innerHTML = '<a href="https://8bit2qubit.github.io/omniconsole-site/zh-CN/download/" target="_blank">Install OmniConsole</a>';
+                        } else {
+                            el.innerHTML = i18n[lang][key];
+                        }
+                    } else {
+                        el.textContent = i18n[lang][key];
+                    }
+                }
+            });
+        }
+
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('open');
+        }
+
+        // Sidebar active state on scroll
+        const sections = document.querySelectorAll('.doc-content h2[id]');
+        const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

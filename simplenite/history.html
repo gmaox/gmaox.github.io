@@ -3,81 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeskGamix 历史版本</title>
+    <title data-i18n="page_title">历史版本 - Simplenite</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Microsoft YaHei', sans-serif;
+        :root {
+            --primary: #e60012;
+            --primary-dark: #c4000f;
+            --bg: #0f0f0f;
+            --surface: #1a1a1a;
+            --surface-hover: #252525;
+            --text: #f5f5f5;
+            --text-secondary: #a0a0a0;
+            --border: #2a2a2a;
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background-color: #f5f7fa;
-            padding: 2rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(15,15,15,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .navbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover { opacity: 0.8; }
+
+        .logo-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.25rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .lang-switch:hover { border-color: var(--primary); }
+
+        .lang-btn {
+            padding: 0.35rem 0.8rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .lang-btn.active { background: var(--primary); color: white; }
+
+        .page-header {
+            padding: 8rem 2rem 3rem;
+            text-align: center;
+            background: radial-gradient(ellipse at 50% 0%, rgba(230,0,18,0.1) 0%, transparent 50%);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .history-container {
             max-width: 900px;
             margin: 0 auto;
+            padding: 0 2rem 4rem;
         }
 
         .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
             padding: 2rem;
             margin-bottom: 1.5rem;
+            transition: var(--transition);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .card-header {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
         }
 
         .card-header h2 {
-            color: #2d3748;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
         }
 
         .version-tag {
-            display: inline-block;
-            background-color: #4299e1;
+            background: var(--primary);
             color: white;
-            padding: 0.2rem 0.8rem;
+            padding: 0.25rem 0.8rem;
             border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
-        .update-info {
-            margin: 1.5rem 0;
-            line-height: 1.8;
-            color: #4a5568;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         .update-info ul {
-            padding-left: 1.5rem;
+            padding-left: 1.2rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
         }
 
-        /* 下载区域默认收起 */
         .download-area {
-            margin: 2rem 0;
+            margin-top: 1.5rem;
             display: none;
         }
 
         .link-switch {
-            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
             padding: 1rem;
-            background-color: #f8f9fa;
+            background: var(--bg);
             border-radius: 8px;
         }
 
         .link-switch label {
-            margin-right: 1.5rem;
-            color: #4a5568;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             cursor: pointer;
-            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .link-switch input[type="radio"] {
+            accent-color: var(--primary);
         }
 
         .file-list {
@@ -89,121 +236,248 @@
             display: block;
             width: 100%;
             padding: 1rem;
-            background-color: #38b2ac;
+            background: var(--primary);
             color: white;
             text-align: center;
             text-decoration: none;
             border-radius: 8px;
-            font-size: 1.1rem;
-            transition: background-color 0.3s;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
         }
 
         .download-btn:hover {
-            background-color: #319795;
+            background: var(--primary-dark);
+            transform: translateY(-1px);
         }
 
         .file-name {
-            color: #718096;
-            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
             margin-top: 0.3rem;
             text-align: center;
         }
 
-        .tips {
-            color: #718096;
+        .toggle-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
             font-size: 0.9rem;
-            line-height: 1.6;
-            margin-top: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .toggle-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         .loading, .error {
             text-align: center;
             padding: 3rem;
-            color: #718096;
+            color: var(--text-secondary);
         }
 
-        .back-btn {
-            display: block;
-            width: 120px;
-            padding: 0.6rem;
-            background-color: #e2e8f0;
-            color: #2d3748;
+        .footer {
+            padding: 3rem 2rem;
             text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--text-secondary);
             text-decoration: none;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            margin: 0 auto 2rem;
-            transition: background-color 0.3s;
+            transition: var(--transition);
         }
 
-        .back-btn:hover {
-            background-color: #cbd5e1;
-        }
+        .footer a:hover { color: var(--primary); }
 
-        /* 展开/收起按钮 */
-        .toggle-btn {
-            padding: 0.6rem 1.2rem;
-            background-color: #e2e8f0;
-            color: #2d3748;
+        .menu-toggle {
+            display: none;
+            background: none;
             border: none;
-            border-radius: 6px;
-            font-size: 0.9rem;
+            color: var(--text);
+            font-size: 1.5rem;
             cursor: pointer;
-            margin-top: 1rem;
-            transition: background-color 0.3s;
         }
 
-        .toggle-btn:hover {
-            background-color: #cbd5e1;
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px; left: 0; right: 0;
+                background: var(--bg);
+                flex-direction: column;
+                padding: 1rem 2rem;
+                gap: 1rem;
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-links.open { display: flex; }
+            .menu-toggle { display: block; }
+            .page-header h1 { font-size: 1.8rem; }
+            .history-container { padding: 0 1.5rem 3rem; }
         }
     </style>
 </head>
 <body>
-    <a href="./index.html" class="back-btn">返回首页</a>
-    <div class="loading" id="loading">正在获取历史版本信息...</div>
-    <div class="error" id="error" style="display: none;">获取版本信息失败，请稍后重试</div>
-    <div id="historyContainer" style="display: none;"></div>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="./index.html" class="logo">
+                <div class="logo-icon"><img src="./fav.ico" alt="Simplenite"></div>
+                <span data-i18n="brand">Simplenite</span>
+            </a>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="./index.html" data-i18n="nav_home">首页</a></li>
+                <li><a href="./docs.html" data-i18n="nav_docs">使用文档</a></li>
+                <li><a href="https://github.com/gmaox/deskgamix" target="_blank" data-i18n="nav_github">GitHub</a></li>
+                <li>
+                    <div class="lang-switch">
+                        <button class="lang-btn active" onclick="setLang('zh')" id="btnZh">中</button>
+                        <button class="lang-btn" onclick="setLang('en')" id="btnEn">EN</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1 data-i18n="page_heading">历史版本</h1>
+        <p data-i18n="page_subheading">查看并下载 Simplenite 的过往版本</p>
+    </div>
+
+    <div class="history-container">
+        <div class="loading" id="loading" data-i18n="loading">正在获取历史版本信息...</div>
+        <div class="error" id="error" style="display: none;" data-i18n="error">获取版本信息失败，请稍后重试</div>
+        <div id="historyContainer" style="display: none;"></div>
+    </div>
+
+    <footer class="footer">
+        <p data-i18n="footer">
+            Simplenite - 开源游戏启动器 |
+            <a href="https://github.com/gmaox/deskgamix" target="_blank">GitHub</a> |
+            <a href="https://discord.gg/ZZBwvfht3" target="_blank">Discord</a> |
+            <a href="https://qm.qq.com/q/IdDakhAgo0" target="_blank">QQ</a> |
+            <a href="https://space.bilibili.com/258889407" target="_blank">B站</a>
+        </p>
+    </footer>
 
     <script>
+        const i18n = {
+            zh: {
+                page_title: '历史版本 - Simplenite',
+                brand: 'Simplenite',
+                nav_home: '首页',
+                nav_docs: '使用文档',
+                nav_github: 'GitHub',
+                page_heading: '历史版本',
+                page_subheading: '查看并下载 Simplenite 的过往版本',
+                loading: '正在获取历史版本信息...',
+                error: '获取版本信息失败，请稍后重试',
+                history_label: '历史版本',
+                show_download: '显示下载',
+                hide_download: '隐藏下载',
+                accel_link: '国内加速',
+                official_link: '官方链接',
+                download_btn: '立即下载',
+                footer: 'Simplenite - 开源游戏启动器 | <a href="https://github.com/gmaox/deskgamix" target="_blank">GitHub</a> | <a href="https://discord.gg/ZZBwvfht3" target="_blank">Discord</a> | <a href="https://qm.qq.com/q/IdDakhAgo0" target="_blank">QQ</a> | <a href="https://space.bilibili.com/258889407" target="_blank">B站</a>'
+            },
+            en: {
+                page_title: 'Releases - Simplenite',
+                brand: 'Simplenite',
+                nav_home: 'Home',
+                nav_docs: 'Docs',
+                nav_github: 'GitHub',
+                page_heading: 'Previous Releases',
+                page_subheading: 'View and download past versions of Simplenite',
+                loading: 'Fetching release history...',
+                error: 'Failed to fetch release info. Please try again later.',
+                history_label: 'Release',
+                show_download: 'Show Downloads',
+                hide_download: 'Hide Downloads',
+                accel_link: 'Mirror (China)',
+                official_link: 'Official',
+                download_btn: 'Download',
+                footer: 'Simplenite - Open Source Game Launcher | <a href="https://github.com/gmaox/deskgamix" target="_blank">GitHub</a> | <a href="https://discord.gg/ZZBwvfht3" target="_blank">Discord</a> | <a href="https://qm.qq.com/q/IdDakhAgo0" target="_blank">QQ</a> | <a href="https://space.bilibili.com/258889407" target="_blank">Bilibili</a>'
+            }
+        };
+
+        let currentLang = 'zh';
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.getElementById('btnZh').classList.toggle('active', lang === 'zh');
+            document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+            document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) {
+                    if (key === 'footer') {
+                        el.innerHTML = i18n[lang][key];
+                    } else {
+                        el.textContent = i18n[lang][key];
+                    }
+                }
+            });
+
+            // Update toggle buttons text
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                const area = btn.nextElementSibling;
+                const isHidden = area.style.display === 'none' || !area.style.display;
+                btn.textContent = isHidden ? i18n[lang].show_download : i18n[lang].hide_download;
+            });
+
+            // Update download button text
+            document.querySelectorAll('.download-btn').forEach(btn => {
+                if (!btn.dataset.file) {
+                    btn.textContent = i18n[lang].download_btn;
+                }
+            });
+        }
+
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('open');
+        }
+
         const GITHUB_REPO = "gmaox/deskgamix";
         const LATEST_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
         const ALL_RELEASES_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases`;
         const ACCELERATE_PREFIX = "https://ghfast.top/";
 
-        const loadingEl = document.getElementById('loading');
-        const errorEl = document.getElementById('error');
-        const historyContainer = document.getElementById('historyContainer');
-
         window.onload = async () => {
             try {
-                // 先获取最新版本号
                 const latestRes = await fetch(LATEST_API_URL);
                 if (!latestRes.ok) throw new Error("获取最新版本失败");
                 const latestRelease = await latestRes.json();
                 const latestTagName = latestRelease.tag_name;
 
-                // 再获取所有版本并过滤掉最新的
                 const allRes = await fetch(ALL_RELEASES_API_URL);
                 if (!allRes.ok) throw new Error("获取所有版本失败");
                 let allReleases = await allRes.json();
-                allReleases = allReleases.filter(release => 
+                allReleases = allReleases.filter(release =>
                     !release.draft && !release.prerelease && release.tag_name !== latestTagName
                 );
 
                 renderHistoryReleases(allReleases);
-                loadingEl.style.display = "none";
-                historyContainer.style.display = "block";
+                document.getElementById('loading').style.display = "none";
+                document.getElementById('historyContainer').style.display = "block";
             } catch (err) {
                 console.error("获取失败：", err);
-                loadingEl.style.display = "none";
-                errorEl.style.display = "block";
+                document.getElementById('loading').style.display = "none";
+                document.getElementById('error').style.display = "block";
             }
         };
 
         function renderHistoryReleases(releases) {
-            historyContainer.innerHTML = '';
+            const container = document.getElementById('historyContainer');
+            container.innerHTML = '';
             releases.forEach(release => {
-                const changelog = release.body || "暂无更新日志";
+                const changelog = release.body || (currentLang === 'zh' ? "暂无更新日志" : "No changelog available");
                 const changelogItems = changelog.split('\n').filter(item => item.trim()).map(item => `<li>${item.replace(/^- /, '')}</li>`).join('');
 
                 const card = document.createElement('div');
@@ -215,37 +489,37 @@
 
                 card.innerHTML = `
                     <div class="card-header">
-                        <h2>历史版本</h2>
+                        <h2 data-i18n="history_label">历史版本</h2>
                         <span class="version-tag">${release.tag_name}</span>
                     </div>
                     <div class="update-info">
                         <ul>${changelogItems}</ul>
                     </div>
-                    <button class="toggle-btn">显示下载</button>
+                    <button class="toggle-btn" data-i18n="show_download">显示下载</button>
                     <div class="download-area">
                         <div class="link-switch">
                             <label>
-                                <input type="radio" name="linkType_${release.tag_name}" value="accelerate" checked> 国内加速
+                                <input type="radio" name="linkType_${release.tag_name}" value="accelerate" checked>
+                                <span data-i18n="accel_link">国内加速</span>
                             </label>
                             <label>
-                                <input type="radio" name="linkType_${release.tag_name}" value="official"> 官方链接
+                                <input type="radio" name="linkType_${release.tag_name}" value="official">
+                                <span data-i18n="official_link">官方链接</span>
                             </label>
                         </div>
                     </div>
                 `;
                 card.querySelector('.download-area').appendChild(fileList);
-                historyContainer.appendChild(card);
+                container.appendChild(card);
 
-                // 绑定展开/收起事件
                 const toggleBtn = card.querySelector('.toggle-btn');
                 const downloadArea = card.querySelector('.download-area');
                 toggleBtn.addEventListener('click', () => {
                     const isHidden = downloadArea.style.display === 'none' || !downloadArea.style.display;
                     downloadArea.style.display = isHidden ? 'block' : 'none';
-                    toggleBtn.textContent = isHidden ? '隐藏下载' : '显示下载';
+                    toggleBtn.textContent = isHidden ? i18n[currentLang].hide_download : i18n[currentLang].show_download;
                 });
 
-                // 绑定链接切换事件
                 document.querySelectorAll(`input[name="linkType_${release.tag_name}"]`).forEach(radio => {
                     radio.addEventListener('change', (e) => {
                         const selectedType = e.target.value;
@@ -269,7 +543,7 @@
                 btn.dataset.official = officialUrl;
                 btn.dataset.accelerate = accelerateUrl;
                 btn.href = accelerateUrl;
-                btn.textContent = "立即下载";
+                btn.textContent = currentLang === 'zh' ? "立即下载" : "Download";
 
                 const fileName = document.createElement('div');
                 fileName.className = "file-name";

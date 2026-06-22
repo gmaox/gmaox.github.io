@@ -3,84 +3,421 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>欢迎使用Simplenite！</title>
+    <title>Simplenite - 简洁全面的游戏启动器</title>
     <style>
+        :root {
+            --primary: #e60012;
+            --primary-dark: #c4000f;
+            --bg: #0f0f0f;
+            --surface: #1a1a1a;
+            --surface-hover: #252525;
+            --text: #f5f5f5;
+            --text-secondary: #a0a0a0;
+            --border: #2a2a2a;
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Microsoft YaHei', sans-serif;
         }
 
         body {
-            background-color: #f5f7fa;
-            padding: 2rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .navbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.25rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .lang-switch:hover {
+            border-color: var(--primary);
+        }
+
+        .lang-btn {
+            padding: 0.35rem 0.8rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Hero 区域 */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(230, 0, 18, 0.15) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            max-width: 900px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-logo-wrap {
+            margin-bottom: 2rem;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .hero-logo-wrap.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        .hero-logo {
+            width: 160px;
+            height: 160px;
+            border-radius: 32px;
+            overflow: hidden;
+            margin: 0 auto;
+            box-shadow: 0 0 0 1px var(--border), 0 20px 60px rgba(230,0,18,0.2);
+            animation: logoFloat 4s ease-in-out infinite, logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        .hero-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes logoGlow {
+            0% { box-shadow: 0 0 0 1px var(--border), 0 20px 60px rgba(230,0,18,0.15); }
+            100% { box-shadow: 0 0 0 1px rgba(230,0,18,0.3), 0 24px 70px rgba(230,0,18,0.35); }
+        }
+
+        .hero-brand {
+            font-size: clamp(2.2rem, 5.5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .hero-brand.hidden {
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+        }
+
+        .hero-brand span {
+            background: linear-gradient(135deg, #fff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #heroBrand2 {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        #heroBrand2.reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-desc {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .hero-desc.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .hero-actions.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.9rem 2rem;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(230, 0, 18, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-hover);
+            border-color: var(--text-secondary);
+            transform: translateY(-2px);
+        }
+
+        /* 下载卡片区域 */
+        .download-section {
+            padding: 4rem 2rem;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+        }
+
+        .section-inner {
             max-width: 800px;
             margin: 0 auto;
         }
 
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+        }
+
         .update-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            background: var(--bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
             padding: 2rem;
+            animation: fadeInUp 0.6s ease-out;
         }
 
         .card-header {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
         }
 
-        .card-header h1 {
-            color: #2d3748;
-            font-size: 1.8rem;
+        .card-header h2 {
+            font-size: 1.3rem;
         }
 
         .version-tag {
-            display: inline-block;
-            background-color: #4299e1;
+            background: var(--primary);
             color: white;
-            padding: 0.2rem 0.8rem;
+            padding: 0.25rem 0.8rem;
             border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
-        .update-info {
-            margin: 1.5rem 0;
-            line-height: 1.8;
-            color: #4a5568;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         .update-info h3 {
-            color: #2d3748;
+            font-size: 1rem;
             margin-bottom: 0.8rem;
-            font-size: 1.1rem;
+            color: var(--text-secondary);
         }
 
         .update-info ul {
-            padding-left: 1.5rem;
-        }
-
-        .download-area {
-            margin: 2rem 0;
+            padding-left: 1.2rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
         }
 
         .link-switch {
-            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
             padding: 1rem;
-            background-color: #f8f9fa;
+            background: var(--surface);
             border-radius: 8px;
         }
 
         .link-switch label {
-            margin-right: 1.5rem;
-            color: #4a5568;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             cursor: pointer;
-            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .link-switch label:hover {
+            color: var(--text);
+        }
+
+        .link-switch input[type="radio"] {
+            accent-color: var(--primary);
         }
 
         .file-list {
@@ -92,111 +429,505 @@
             display: block;
             width: 100%;
             padding: 1rem;
-            background-color: #38b2ac;
+            background: var(--primary);
             color: white;
             text-align: center;
             text-decoration: none;
             border-radius: 8px;
-            font-size: 1.1rem;
-            transition: background-color 0.3s;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
         }
 
         .download-btn:hover {
-            background-color: #319795;
+            background: var(--primary-dark);
+            transform: translateY(-1px);
         }
 
         .file-name {
-            color: #718096;
-            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
             margin-top: 0.3rem;
             text-align: center;
         }
 
-        .tips {
-            color: #718096;
-            font-size: 0.9rem;
-            line-height: 1.6;
+        .download-tips {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
             margin-top: 1rem;
+            text-align: center;
+        }
+
+        .history-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .history-link:hover {
+            color: var(--primary);
         }
 
         .loading, .error {
             text-align: center;
             padding: 3rem;
-            color: #718096;
+            color: var(--text-secondary);
         }
 
-        /* 历史版本按钮样式 */
-        .history-btn-area {
-            margin-top: 2rem;
+        /* 特性展示 */
+        .features {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .feature-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(230, 0, 18, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* 截图展示 */
+        .screenshots {
+            padding: 4rem 2rem;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+        }
+
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 2.5rem auto 0;
+        }
+
+        .screenshot-item {
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .screenshot-item:hover {
+            transform: scale(1.02);
+            border-color: var(--primary);
+        }
+
+        .screenshot-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* 页脚 */
+        .footer {
+            padding: 3rem 2rem;
             text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
         }
 
-        .history-btn {
-            padding: 0.8rem 2rem;
-            background-color: #e2e8f0;
-            color: #2d3748;
+        .footer a {
+            color: var(--text-secondary);
             text-decoration: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: background-color 0.3s;
+            transition: var(--transition);
         }
 
-        .history-btn:hover {
-            background-color: #cbd5e1;
+        .footer a:hover {
+            color: var(--primary);
+        }
+
+        /* 移动端菜单 */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: var(--bg);
+                flex-direction: column;
+                padding: 1rem 2rem;
+                gap: 1rem;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="loading" id="loading">正在获取最新版本信息...</div>
-    <div class="error" id="error" style="display: none;">获取版本信息失败，请稍后重试</div>
-    <div class="update-card" id="updateCard" style="display: none;">
-        <div class="card-header">
-            <h1>Simplenite下载页面</h1>
-            <span class="version-tag" id="version">v1.0.0</span>
-        </div>
-
-        <div class="update-info">
-            <h3>更新日志</h3>
-            <ul id="changelog">
-                <!-- 动态填充更新日志 -->
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="./index.html" class="logo">
+                <div class="logo-icon"><img src="./fav.ico" alt="Simplenite"></div>
+                <span data-i18n="brand">Simplenite</span>
+            </a>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="./index.html" data-i18n="nav_home">首页</a></li>
+                <li><a href="./docs.html" data-i18n="nav_docs">使用文档</a></li>
+                <li><a href="https://github.com/gmaox/deskgamix" target="_blank" data-i18n="nav_github">GitHub</a></li>
+                <li>
+                    <div class="lang-switch">
+                        <button class="lang-btn active" onclick="setLang('zh')" id="btnZh">中</button>
+                        <button class="lang-btn" onclick="setLang('en')" id="btnEn">EN</button>
+                    </div>
+                </li>
             </ul>
         </div>
+    </nav>
 
-        <div class="download-area">
-            <div class="link-switch">
-                <label>
-                    <input type="radio" name="linkType" value="accelerate" checked> 国内加速
-                </label>
-                <label>
-                    <input type="radio" name="linkType" value="official"> 官方链接
-                </label>
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="hero-logo-wrap" id="heroLogoWrap">
+                <div class="hero-logo">
+                    <img src="./fav.ico" alt="Simplenite">
+                </div>
             </div>
-            <div class="file-list" id="fileList">
-                <!-- 动态填充下载按钮 -->
-            </div>
-            <div class="tips">
-                下载加速服务由ghfast.top提供；若加速链接失效，请切换至官方链接。
+            <div class="hero-brand" id="heroBrand"><span>Simplenite</span></div>
+            <div class="hero-brand" id="heroBrand2" style="display:none;" data-i18n="hero_title"><span>简洁全面的游戏启动器</span></div>
+            <p class="hero-desc" id="heroDesc" data-i18n="hero_desc">
+                配置简单、占用低，仿 Switch 界面。支持手柄、触摸操作，内置鼠标模拟、存档同步、截图等游戏工具。
+            </p>
+            <div class="hero-actions" id="heroActions">
+                <a href="#download" class="btn btn-primary" data-i18n="btn_download">立即下载</a>
+                <a href="./docs.html" class="btn btn-secondary" data-i18n="btn_docs">使用文档</a>
             </div>
         </div>
+    </section>
 
-        <!-- 新增历史版本按钮 -->
-        <div class="history-btn-area">
-            <a href="./history.html" class="history-btn">查看历史版本</a>
+    <section class="download-section" id="download">
+        <div class="section-inner">
+            <h2 class="section-title" data-i18n="download_title">下载 Simplenite</h2>
+            <p class="section-subtitle" data-i18n="download_subtitle">获取最新版本，开始你的游戏之旅</p>
+
+            <div class="loading" id="loading" data-i18n="loading">正在获取最新版本信息...</div>
+            <div class="error" id="error" style="display: none;" data-i18n="error">获取版本信息失败，请稍后重试</div>
+
+            <div class="update-card" id="updateCard" style="display: none;">
+                <div class="card-header">
+                    <h2 data-i18n="latest_version">最新版本</h2>
+                    <span class="version-tag" id="version">v1.0.0</span>
+                </div>
+
+                <div class="update-info">
+                    <h3 data-i18n="changelog">更新日志</h3>
+                    <ul id="changelog"></ul>
+                </div>
+
+                <div class="link-switch">
+                    <label>
+                        <input type="radio" name="linkType" value="accelerate" checked>
+                        <span data-i18n="accel_link">国内加速</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="linkType" value="official">
+                        <span data-i18n="official_link">官方链接</span>
+                    </label>
+                </div>
+
+                <div class="file-list" id="fileList"></div>
+                <div class="download-tips" data-i18n="download_tips">
+                    下载加速服务由 ghfast.top 提供；若加速链接失效，请切换至官方链接。
+                </div>
+                <a href="./history.html" class="history-link" data-i18n="history_link">查看历史版本 →</a>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <section class="features">
+        <h2 class="section-title" data-i18n="features_title">功能亮点</h2>
+        <p class="section-subtitle" data-i18n="features_subtitle">为游戏体验精心打造的实用功能</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <h3 data-i18n="feat1_title">极简设计</h3>
+                <p data-i18n="feat1_desc">没有繁琐的设置界面，全屏管理游戏库，沉浸式体验！</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 data-i18n="feat2_title">低资源占用</h3>
+                <p data-i18n="feat2_desc">依赖高效的 Qt 组件，只需几十 MB 内存，从拿起手柄到进入游戏仅需 3 秒！</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3 data-i18n="feat3_title">设计合理</h3>
+                <p data-i18n="feat3_desc">精心排布的布局，良好的触摸体验，完善的手柄支持（Xbox / DS4）</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🪟</div>
+                <h3 data-i18n="feat3b_title">窗口切换</h3>
+                <p data-i18n="feat3b_desc">方便地在软件中关闭或切换后台窗口，无需返回桌面即可管理多任务</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🖱️</div>
+                <h3 data-i18n="feat4_title">鼠标模拟</h3>
+                <p data-i18n="feat4_desc">左右非对称性摇杆精确定位鼠标，特色键盘模拟，上手难度低效率高</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛠️</div>
+                <h3 data-i18n="feat5_title">工具合集</h3>
+                <p data-i18n="feat5_desc">常用软件启动菜单，可设置游戏连携启动，减少开机启动项</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">☁️</div>
+                <h3 data-i18n="feat6_title">存档同步</h3>
+                <p data-i18n="feat6_desc">一键同步云端存档，使用 WebDAV，随时随地继续游戏</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📸</div>
+                <h3 data-i18n="feat7_title">游戏截图</h3>
+                <p data-i18n="feat7_desc">手柄快速游戏截图，记录美好瞬间</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3 data-i18n="feat8_title">沉浸模式</h3>
+                <p data-i18n="feat8_desc">隐藏繁杂桌面图标，回归掌机体验</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="screenshots">
+        <h2 class="section-title" data-i18n="screenshots_title">界面预览</h2>
+        <p class="section-subtitle" data-i18n="screenshots_subtitle">仿 Switch 风格的游戏库管理界面</p>
+        <div class="screenshots-grid">
+            <div class="screenshot-item">
+                <img src="https://github.com/user-attachments/assets/49a88ab2-aaba-4f84-ab6f-b066711f8a52" alt="Simplenite 主界面" loading="lazy">
+            </div>
+            <div class="screenshot-item">
+                <img src="https://github.com/user-attachments/assets/305dd201-c5b3-472b-a296-7506b650433f" alt="Simplenite 截图" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p data-i18n="footer">
+            Simplenite - 开源游戏启动器 |
+            <a href="https://github.com/gmaox/deskgamix" target="_blank">GitHub</a> |
+            <a href="https://discord.gg/ZZBwvfht3" target="_blank">Discord</a> |
+            <a href="https://qm.qq.com/q/IdDakhAgo0" target="_blank">QQ</a> |
+            <a href="https://space.bilibili.com/258889407" target="_blank">B站</a>
+        </p>
+    </footer>
 
     <script>
+        // 多语言数据
+        const i18n = {
+            zh: {
+                brand: 'Simplenite',
+                nav_home: '首页',
+                nav_docs: '使用文档',
+                nav_github: 'GitHub',
+                hero_title: '简洁全面的游戏启动器',
+                hero_desc: '配置简单、占用低，仿 Switch 界面。支持手柄、触摸操作，内置鼠标模拟、存档同步、截图等游戏工具。',
+                btn_download: '立即下载',
+                btn_docs: '使用文档',
+                download_title: '下载 Simplenite',
+                download_subtitle: '获取最新版本，开始你的游戏之旅',
+                loading: '正在获取最新版本信息...',
+                error: '获取版本信息失败，请稍后重试',
+                latest_version: '最新版本',
+                changelog: '更新日志',
+                accel_link: '国内加速',
+                official_link: '官方链接',
+                download_tips: '下载加速服务由 ghfast.top 提供；若加速链接失效，请切换至官方链接。',
+                history_link: '查看历史版本 →',
+                features_title: '功能亮点',
+                features_subtitle: '为游戏体验精心打造的实用功能',
+                feat1_title: '极简设计',
+                feat1_desc: '没有繁琐的设置界面，全屏管理游戏库，沉浸式体验！',
+                feat2_title: '低资源占用',
+                feat2_desc: '依赖高效的 Qt 组件，只需几十 MB 内存，从拿起手柄到进入游戏仅需 3 秒！',
+                feat3_title: '设计合理',
+                feat3_desc: '精心排布的布局，良好的触摸体验，完善的手柄支持（Xbox / DS4）',
+                feat3b_title: '窗口切换',
+                feat3b_desc: '方便地在软件中关闭或切换后台窗口，无需返回桌面即可管理多任务',
+                feat4_title: '鼠标模拟',
+                feat4_desc: '左右非对称性摇杆精确定位鼠标，特色键盘模拟，上手难度低效率高',
+                feat5_title: '工具合集',
+                feat5_desc: '常用软件启动菜单，可设置游戏连携启动，减少开机启动项',
+                feat6_title: '存档同步',
+                feat6_desc: '一键同步云端存档，使用 WebDAV，随时随地继续游戏',
+                feat7_title: '游戏截图',
+                feat7_desc: '手柄快速游戏截图，记录美好瞬间',
+                feat8_title: '沉浸模式',
+                feat8_desc: '隐藏繁杂桌面图标，回归掌机体验',
+                screenshots_title: '界面预览',
+                screenshots_subtitle: '仿 Switch 风格的游戏库管理界面',
+                footer: 'Simplenite - 开源游戏启动器 | <a href="https://github.com/gmaox/deskgamix" target="_blank">GitHub</a> | <a href="https://discord.gg/ZZBwvfht3" target="_blank">Discord</a> | <a href="https://qm.qq.com/q/IdDakhAgo0" target="_blank">QQ</a> | <a href="https://space.bilibili.com/258889407" target="_blank">B站</a>'
+            },
+            en: {
+                brand: 'Simplenite',
+                nav_home: 'Home',
+                nav_docs: 'Docs',
+                nav_github: 'GitHub',
+                hero_title: 'Clean & Feature-Rich Game Launcher',
+                hero_desc: 'Simple config, low resource usage, Nintendo Switch-inspired UI. Supports gamepad & touch, with built-in mouse emulation, save sync, screenshots and more.',
+                btn_download: 'Download',
+                btn_docs: 'Documentation',
+                download_title: 'Download Simplenite',
+                download_subtitle: 'Get the latest version and start your gaming journey',
+                loading: 'Fetching latest release...',
+                error: 'Failed to fetch release info. Please try again later.',
+                latest_version: 'Latest Version',
+                changelog: 'Changelog',
+                accel_link: 'Mirror (China)',
+                official_link: 'Official',
+                download_tips: 'Download acceleration provided by ghfast.top. Switch to official link if mirror is unavailable.',
+                history_link: 'View previous releases →',
+                features_title: 'Highlights',
+                features_subtitle: 'Carefully crafted features for your gaming experience',
+                feat1_title: 'Minimalist Design',
+                feat1_desc: 'No complicated settings. Manage your library in full-screen for an immersive experience.',
+                feat2_title: 'Low Resource Usage',
+                feat2_desc: 'Built on efficient Qt components, using only a few dozen MB of RAM. Launch a game in as little as 3 seconds!',
+                feat3_title: 'Thoughtful Design',
+                feat3_desc: 'Carefully arranged layouts, excellent touch support, and full gamepad compatibility (Xbox / DS4).',
+                feat3b_title: 'Window Switcher',
+                feat3b_desc: 'Easily close or switch background windows within the app, no need to return to the desktop.',
+                feat4_title: 'Mouse Emulation',
+                feat4_desc: 'Asymmetrical dual-stick controls for precise mouse movement, with a unique keyboard emulation system.',
+                feat5_title: 'Utility Hub',
+                feat5_desc: 'Quick-launch menu for commonly used apps. Configure apps to launch alongside games.',
+                feat6_title: 'Save Sync',
+                feat6_desc: 'One-click cloud save synchronization via WebDAV. Continue your game anywhere.',
+                feat7_title: 'Screenshots',
+                feat7_desc: 'Capture screenshots instantly with your controller and preserve your favorite moments.',
+                feat8_title: 'Immersive Mode',
+                feat8_desc: 'Hide desktop clutter and distractions to recreate a handheld-console-like experience.',
+                screenshots_title: 'Screenshots',
+                screenshots_subtitle: 'Nintendo Switch-inspired game library interface',
+                footer: 'Simplenite - Open Source Game Launcher | <a href="https://github.com/gmaox/deskgamix" target="_blank">GitHub</a> | <a href="https://discord.gg/ZZBwvfht3" target="_blank">Discord</a> | <a href="https://qm.qq.com/q/IdDakhAgo0" target="_blank">QQ</a> | <a href="https://space.bilibili.com/258889407" target="_blank">Bilibili</a>'
+            }
+        };
+
+        let currentLang = 'zh';
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.getElementById('btnZh').classList.toggle('active', lang === 'zh');
+            document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+            document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) {
+                    if (key === 'footer') {
+                        el.innerHTML = i18n[lang][key];
+                    } else {
+                        el.textContent = i18n[lang][key];
+                    }
+                }
+            });
+
+            // 更新 heroBrand2 的 span 内容（保持渐变文字效果）
+            const brand2 = document.getElementById('heroBrand2');
+            if (brand2 && i18n[lang].hero_title) {
+                brand2.querySelector('span').textContent = i18n[lang].hero_title;
+            }
+        }
+
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('open');
+        }
+
+        // 滚动动画
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.feature-card').forEach(card => observer.observe(card));
+
+        // 下载逻辑（保留原始功能）
         const GITHUB_REPO = "gmaox/deskgamix";
         const API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
         const ACCELERATE_PREFIX = "https://ghfast.top/";
-
-        const loadingEl = document.getElementById('loading');
-        const errorEl = document.getElementById('error');
-        const updateCardEl = document.getElementById('updateCard');
-        const versionEl = document.getElementById('version');
-        const changelogEl = document.getElementById('changelog');
-        const fileListEl = document.getElementById('fileList');
-        const linkTypeRadios = document.querySelectorAll('input[name="linkType"]');
 
         async function fetchAndRenderLatestRelease() {
             try {
@@ -204,22 +935,23 @@
                 if (!response.ok) throw new Error("API请求失败");
                 const release = await response.json();
 
-                versionEl.textContent = release.tag_name;
-                const changelog = release.body || "暂无更新日志";
+                document.getElementById('version').textContent = release.tag_name;
+                const changelog = release.body || (currentLang === 'zh' ? "暂无更新日志" : "No changelog available");
                 const changelogItems = changelog.split('\n').filter(item => item.trim());
-                changelogEl.innerHTML = changelogItems.map(item => `<li>${item.replace(/^- /, '')}</li>`).join('');
+                document.getElementById('changelog').innerHTML = changelogItems.map(item => `<li>${item.replace(/^- /, '')}</li>`).join('');
                 renderFileList(release.assets);
 
-                loadingEl.style.display = "none";
-                updateCardEl.style.display = "block";
+                document.getElementById('loading').style.display = "none";
+                document.getElementById('updateCard').style.display = "block";
             } catch (err) {
                 console.error("获取版本信息失败：", err);
-                loadingEl.style.display = "none";
-                errorEl.style.display = "block";
+                document.getElementById('loading').style.display = "none";
+                document.getElementById('error').style.display = "block";
             }
         }
 
         function renderFileList(assets) {
+            const fileListEl = document.getElementById('fileList');
             fileListEl.innerHTML = '';
             assets.forEach(asset => {
                 const officialUrl = asset.browser_download_url;
@@ -231,7 +963,7 @@
                 btn.dataset.official = officialUrl;
                 btn.dataset.accelerate = accelerateUrl;
                 btn.href = document.querySelector('input[name="linkType"]:checked').value === "accelerate" ? accelerateUrl : officialUrl;
-                btn.textContent = "立即下载";
+                btn.textContent = currentLang === 'zh' ? "立即下载" : "Download";
 
                 const fileName = document.createElement('div');
                 fileName.className = "file-name";
@@ -243,7 +975,7 @@
             });
         }
 
-        linkTypeRadios.forEach(radio => {
+        document.querySelectorAll('input[name="linkType"]').forEach(radio => {
             radio.addEventListener('change', () => {
                 const selectedType = radio.value;
                 document.querySelectorAll('.download-btn').forEach(btn => {
@@ -251,6 +983,24 @@
                 });
             });
         });
+
+        // 页面加载 1 秒后：大图标和 Simplenite 消失，显示标题和描述
+        setTimeout(() => {
+            document.getElementById('heroLogoWrap').classList.add('hidden');
+            document.getElementById('heroBrand').classList.add('hidden');
+
+            setTimeout(() => {
+                document.getElementById('heroLogoWrap').style.display = 'none';
+                document.getElementById('heroBrand').style.display = 'none';
+                const brand2 = document.getElementById('heroBrand2');
+                brand2.style.display = 'block';
+                // 强制重排确保浏览器已应用 display:block
+                void brand2.offsetHeight;
+                brand2.classList.add('reveal');
+                document.getElementById('heroDesc').classList.add('visible');
+                document.getElementById('heroActions').classList.add('visible');
+            }, 500);
+        }, 1000);
 
         window.onload = fetchAndRenderLatestRelease;
     </script>
