@@ -700,7 +700,11 @@
 
                 <div class="link-switch">
                     <label>
-                        <input type="radio" name="linkType" value="accelerate" checked>
+                        <input type="radio" name="linkType" value="ghproxy" checked>
+                        <span data-i18n="ghproxy_link">加速 (gh-proxy)</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="linkType" value="accelerate">
                         <span data-i18n="accel_link">国内加速</span>
                     </label>
                     <label>
@@ -811,9 +815,10 @@
                 error: '获取版本信息失败，请稍后重试',
                 latest_version: '最新版本',
                 changelog: '更新日志',
+                ghproxy_link: '加速 (gh-proxy)',
                 accel_link: '国内加速',
                 official_link: '官方链接',
-                download_tips: '下载加速服务由 ghfast.top 提供；若加速链接失效，请切换至官方链接。',
+                download_tips: '下载加速服务由 v6.gh-proxy.org 与 ghfast.top 提供；若加速链接失效，请切换至官方链接。',
                 history_link: '查看历史版本 →',
                 features_title: '功能亮点',
                 features_subtitle: '为游戏体验精心打造的实用功能',
@@ -854,9 +859,10 @@
                 error: 'Failed to fetch release info. Please try again later.',
                 latest_version: 'Latest Version',
                 changelog: 'Changelog',
+                ghproxy_link: 'Mirror (gh-proxy)',
                 accel_link: 'Mirror (China)',
                 official_link: 'Official',
-                download_tips: 'Download acceleration provided by ghfast.top. Switch to official link if mirror is unavailable.',
+                download_tips: 'Download acceleration provided by v6.gh-proxy.org and ghfast.top. Switch to official link if mirrors are unavailable.',
                 history_link: 'View previous releases →',
                 features_title: 'Highlights',
                 features_subtitle: 'Carefully crafted features for your gaming experience',
@@ -929,6 +935,7 @@
         const GITHUB_REPO = "gmaox/deskgamix";
         const API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
         const ACCELERATE_PREFIX = "https://ghfast.top/";
+        const GHPROXY_PREFIX = "https://v6.gh-proxy.org/";
 
         async function fetchAndRenderLatestRelease() {
             try {
@@ -957,13 +964,16 @@
             assets.forEach(asset => {
                 const officialUrl = asset.browser_download_url;
                 const accelerateUrl = ACCELERATE_PREFIX + officialUrl;
+                const ghproxyUrl = GHPROXY_PREFIX + officialUrl;
 
                 const wrapper = document.createElement('div');
                 const btn = document.createElement('a');
                 btn.className = "download-btn";
                 btn.dataset.official = officialUrl;
                 btn.dataset.accelerate = accelerateUrl;
-                btn.href = document.querySelector('input[name="linkType"]:checked').value === "accelerate" ? accelerateUrl : officialUrl;
+                btn.dataset.ghproxy = ghproxyUrl;
+                const selected = document.querySelector('input[name="linkType"]:checked').value;
+                btn.href = selected === "accelerate" ? accelerateUrl : selected === "ghproxy" ? ghproxyUrl : officialUrl;
                 btn.textContent = currentLang === 'zh' ? "立即下载" : "Download";
 
                 const fileName = document.createElement('div');
